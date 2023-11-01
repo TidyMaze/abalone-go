@@ -27,6 +27,22 @@ func showGrid(grid map[Coord3D]int) string {
 			}
 		}
 
+		switch y {
+		case -3:
+			line = line[3:]
+		case -2:
+			line = line[2:]
+		case -1:
+			line = line[1:]
+		case 0:
+		case 1:
+			line = " " + line
+		case 2:
+			line = "  " + line
+		case 3:
+			line = "   " + line
+		}
+
 		res += fmt.Sprintf("%s\n", line)
 	}
 
