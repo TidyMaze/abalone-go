@@ -14,18 +14,20 @@ func showGrid(grid map[Coord3D]int) string {
 	// for each horizontal line, print the line
 	// x and y are in 2D coordinates
 	for y := -3; y <= 3; y++ {
+		line := ""
+
 		// print the line
 		for x := -3; x <= 3; x++ {
 			coord := Coord2D{x, y}.To3D()
 
 			if v, ok := grid[coord]; ok {
-				res += fmt.Sprintf("%d ", v)
+				line += fmt.Sprintf("%d ", v)
 			} else {
-				res += "  "
+				line += "  "
 			}
 		}
 
-		res += "\n"
+		res += fmt.Sprintf("%s\n", line)
 	}
 
 	return res
