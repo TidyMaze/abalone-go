@@ -50,6 +50,12 @@ func NewGame() *AbaloneGame {
 }
 
 func (g AbaloneGame) Show() string {
+	grid := g.grid
+
+	return showGrid(grid)
+}
+
+func showGrid(grid map[Coord3D]int) string {
 	res := ""
 
 	// top left cell (-3, -3) is in (-3,3,6)
@@ -61,7 +67,8 @@ func (g AbaloneGame) Show() string {
 		// print the line
 		for x := -3; x <= 3; x++ {
 			coord := Coord2D{x, y}.To3D()
-			if v, ok := g.grid[coord]; ok {
+
+			if v, ok := grid[coord]; ok {
 				res += fmt.Sprintf("%d ", v)
 			} else {
 				res += "  "
