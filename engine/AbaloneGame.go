@@ -55,7 +55,26 @@ func NewGame() *AbaloneGame {
 }
 
 func (g AbaloneGame) Show() string {
-	return fmt.Sprintf("%v", g.grid)
+	res := ""
+
+	// for each horizontal line, print the line
+	for z := -3; z <= 3; z++ {
+		// print the line
+		for hCoord := -3; hCoord <= 3; hCoord++ {
+			x := hCoord
+			y := -hCoord - z
+
+			if between(x, -3, 3) && between(y, -3, 3) && between(z, -3, 3) {
+				res += fmt.Sprintf("%d ", g.grid[Coord{x, y, z}])
+			} else {
+				res += "_ "
+			}
+		}
+
+		res += "\n"
+	}
+
+	return res
 }
 
 func buildEmptyGrid() map[Coord]int {
