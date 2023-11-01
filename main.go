@@ -28,4 +28,9 @@ func main() {
 
 	println("Game pushed to the right:")
 	println(game.Show())
+
+	game.Push(Coord3D{X: -2, Y: -1, Z: 3}, Right)
+
+	println("Game pushed to the right:")
+	println(game.Show())
 }
