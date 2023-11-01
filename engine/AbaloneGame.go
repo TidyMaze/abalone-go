@@ -63,7 +63,7 @@ func (g Game) GetGrid(c Coord3D) int {
 	return g.grid[c]
 }
 
-func (g Game) Push(from Coord3D, direction Direction) error {
+func (g Game) Push(from Coord3D, direction Direction, count int) error {
 	if !IsValidCoord(from) {
 		return errors.New(fmt.Sprintf("Invalid from coord: %v", from))
 	}
