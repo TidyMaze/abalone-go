@@ -61,7 +61,7 @@ func (g Game) SetGrid(c Coord3D, v int) {
 
 func (g Game) Push(from Coord3D, direction Direction) error {
 	if !isValidCoord(from) {
-		return errors.New(fmt.Sprintf("Invalid coord %v", from))
+		return errors.New(fmt.Sprintf("Invalid from coord: %v", from))
 	}
 
 	cellContent := g.grid[from]
@@ -69,11 +69,7 @@ func (g Game) Push(from Coord3D, direction Direction) error {
 		return errors.New("No marble to push")
 	}
 
-	destination := from.add(direction)
-
-	if !isValidCoord(destination) {
-		return errors.New(fmt.Sprintf("Invalid destination %v", destination))
-	}
+	destination := from.Add(direction)
 
 	destinationContent := g.grid[destination]
 

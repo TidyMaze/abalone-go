@@ -21,7 +21,7 @@ func (c Coord3D) To2D() Coord2D {
 	return Coord2D{c.X, c.Y}
 }
 
-func (c Coord3D) add(direction Direction) Coord3D {
+func (c Coord3D) Add(direction Direction) Coord3D {
 	switch direction {
 	case TopRight:
 		return Coord3D{c.X + 1, c.Y, c.Z - 1}

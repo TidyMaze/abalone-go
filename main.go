@@ -29,8 +29,17 @@ func main() {
 	println("Game pushed to the right:")
 	println(game.Show())
 
-	game.Push(Coord3D{X: -2, Y: -1, Z: 3}, Right)
+	currentMarbleCoord := Coord3D{X: -2, Y: -1, Z: 3}
 
-	println("Game pushed to the right:")
-	println(game.Show())
+	for {
+		err := game.Push(currentMarbleCoord, Right)
+		if err != nil {
+			panic(err)
+		}
+		currentMarbleCoord = currentMarbleCoord.Add(Right)
+
+		println("Game pushed to the right:")
+		println(game.Show())
+	}
+
 }
