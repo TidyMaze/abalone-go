@@ -4,6 +4,7 @@ import (
 	. "abalone-go/engine"
 	"abalone-go/helpers"
 	"fmt"
+	"math/rand"
 )
 
 func main() {
@@ -54,4 +55,21 @@ func main() {
 		println(game.Show())
 	}
 
+	randomGame := NewGame()
+	fillRandomly(randomGame)
+
+	println("Random game:")
+	println(randomGame.Show())
+}
+
+func fillRandomly(game *Game) {
+	for y := -3; y <= 3; y++ {
+		for x := -3; x <= 3; x++ {
+			coord := Coord2D{x, y}.To3D()
+
+			if IsValidCoord(coord) {
+				game.SetGrid(coord, rand.Intn(3))
+			}
+		}
+	}
 }
