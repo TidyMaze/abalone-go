@@ -75,14 +75,17 @@ func (g Game) Push(from Coord3D, direction Direction) error {
 
 	destination := from.Add(direction)
 
-	destinationContent := g.grid[destination]
+	destinationContent, destinationExists := g.grid[destination]
 
-	if destinationContent != 0 {
+	if destinationExists && destinationContent != 0 {
 		return errors.New("destination is not empty")
 	}
 
 	g.grid[from] = 0
-	g.grid[destination] = cellContent
+
+	if destinationExists {
+		g.grid[destination] = cellContent
+	}
 
 	return nil
 }
