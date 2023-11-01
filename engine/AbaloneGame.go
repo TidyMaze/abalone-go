@@ -78,7 +78,7 @@ func (g Game) Push(from Coord3D, direction Direction) error {
 	destinationContent := g.grid[destination]
 
 	if destinationContent != 0 {
-		return errors.New("Destination is not empty")
+		return errors.New("destination is not empty")
 	}
 
 	g.grid[from] = 0
