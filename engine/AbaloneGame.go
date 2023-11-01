@@ -36,25 +36,6 @@ import (
  * - top left (0, 1, -1)
  */
 
-type Coord3D struct {
-	X int
-	Y int
-	Z int
-}
-
-type Coord2D struct {
-	X int
-	Y int
-}
-
-func (c Coord2D) To3D() Coord3D {
-	return Coord3D{c.X, -c.X - c.Y, c.Y}
-}
-
-func (c Coord3D) To2D() Coord2D {
-	return Coord2D{c.X, c.Y}
-}
-
 type AbaloneGame struct {
 	grid map[Coord3D]int
 }
@@ -136,11 +117,4 @@ func buildEmptyGrid() map[Coord3D]int {
 	AssertEqual(37, len(grid))
 
 	return grid
-}
-
-func isValidCoord(c Coord3D) bool {
-	return Between(c.X, -3, 3) &&
-		Between(c.Y, -3, 3) &&
-		Between(c.Z, -3, 3) &&
-		c.X+c.Y+c.Z == 0
 }
