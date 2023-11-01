@@ -70,7 +70,7 @@ func (g Game) Push(from Coord3D, direction Direction) error {
 
 	cellContent := g.grid[from]
 	if cellContent == 0 {
-		return errors.New("No marble to push")
+		return errors.New("no marble to push")
 	}
 
 	destination := from.Add(direction)
