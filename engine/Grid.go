@@ -60,7 +60,7 @@ func buildEmptyGrid() map[Coord3D]int {
 			}
 
 			for _, neighbor := range neighbors {
-				if _, ok := grid[neighbor]; !ok && isValidCoord(neighbor) {
+				if _, ok := grid[neighbor]; !ok && IsValidCoord(neighbor) {
 					queue = append(queue, neighbor)
 				}
 			}

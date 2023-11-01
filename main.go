@@ -29,14 +29,26 @@ func main() {
 	println("Game pushed to the right:")
 	println(game.Show())
 
-	currentMarbleCoord := Coord3D{X: -2, Y: -1, Z: 3}
+	currentMarbleCoord := &Coord3D{X: -2, Y: -1, Z: 3}
 
 	for {
-		err := game.Push(currentMarbleCoord, Right)
+		if currentMarbleCoord == nil {
+			println("No more marble to push")
+			break
+		}
+
+		err := game.Push(*currentMarbleCoord, Right)
 		if err != nil {
 			panic(err)
 		}
-		currentMarbleCoord = currentMarbleCoord.Add(Right)
+
+		destination := currentMarbleCoord.Add(Right)
+
+		if !IsValidCoord(destination) {
+			currentMarbleCoord = nil
+		} else {
+			currentMarbleCoord = &destination
+		}
 
 		println("Game pushed to the right:")
 		println(game.Show())

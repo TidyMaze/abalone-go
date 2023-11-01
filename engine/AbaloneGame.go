@@ -59,8 +59,12 @@ func (g Game) SetGrid(c Coord3D, v int) {
 	g.grid[c] = v
 }
 
+func (g Game) GetGrid(c Coord3D) int {
+	return g.grid[c]
+}
+
 func (g Game) Push(from Coord3D, direction Direction) error {
-	if !isValidCoord(from) {
+	if !IsValidCoord(from) {
 		return errors.New(fmt.Sprintf("Invalid from coord: %v", from))
 	}
 
