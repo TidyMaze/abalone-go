@@ -1,6 +1,7 @@
 package engine
 
 import (
+	"abalone-go/helpers"
 	"fmt"
 )
 
@@ -130,9 +131,9 @@ func buildEmptyGrid() map[Coord3D]int {
 				}
 			}
 		}
-
-		println(fmt.Sprintf("Queue size %d, grid size %d", len(queue), len(grid)))
 	}
+
+	helpers.AssertEqual(37, len(grid))
 
 	return grid
 }
