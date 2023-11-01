@@ -35,14 +35,27 @@ import (
  * - top left (0, 1, -1)
  */
 
-type Coord struct {
-	x int
-	y int
-	z int
+type Coord3D struct {
+	X int
+	Y int
+	Z int
+}
+
+type Coord2D struct {
+	X int
+	Y int
+}
+
+func (c Coord2D) To3D() Coord3D {
+	return Coord3D{c.X, -c.X - c.Y, c.Y}
+}
+
+func (c Coord3D) To2D() Coord2D {
+	return Coord2D{c.X, c.Y}
 }
 
 type AbaloneGame struct {
-	grid map[Coord]int
+	grid map[Coord3D]int
 }
 
 func (g AbaloneGame) show() {
@@ -57,17 +70,22 @@ func NewGame() *AbaloneGame {
 func (g AbaloneGame) Show() string {
 	res := ""
 
+	// top left cell (-3, -3) is in (-3,3,6)
+	// bottom right cell (3, 3) is in (3,-6,3)
+
 	// for each horizontal line, print the line
 	for z := -3; z <= 3; z++ {
 		// print the line
 		for hCoord := -3; hCoord <= 3; hCoord++ {
-			x := hCoord
-			y := -hCoord - z
+			// find the cell
+			vCoord := -hCoord - z
+			cell := Coord3D{hCoord, vCoord, z}
 
-			if between(x, -3, 3) && between(y, -3, 3) && between(z, -3, 3) {
-				res += fmt.Sprintf("%d ", g.grid[Coord{x, y, z}])
+			// print the cell
+			if _, ok := g.grid[cell]; ok {
+				res += " 0 "
 			} else {
-				res += "_ "
+				res += "   "
 			}
 		}
 
@@ -77,10 +95,14 @@ func (g AbaloneGame) Show() string {
 	return res
 }
 
-func buildEmptyGrid() map[Coord]int {
-	grid := make(map[Coord]int)
+func (g AbaloneGame) SetGrid(c Coord3D, v int) {
+	g.grid[c] = v
+}
 
-	queue := []Coord{Coord{0, 0, 0}}
+func buildEmptyGrid() map[Coord3D]int {
+	grid := make(map[Coord3D]int)
+
+	queue := []Coord3D{Coord3D{0, 0, 0}}
 
 	for len(queue) > 0 {
 		cell := queue[0]
@@ -90,19 +112,19 @@ func buildEmptyGrid() map[Coord]int {
 			grid[cell] = 0
 
 			// Add the 6 neighbors to the queue
-			neighbors := []Coord{
+			neighbors := []Coord3D{
 				// top right
-				Coord{cell.x + 1, cell.y, cell.z - 1},
+				Coord3D{cell.X + 1, cell.Y, cell.Z - 1},
 				// right
-				Coord{cell.x + 1, cell.y - 1, cell.z},
+				Coord3D{cell.X + 1, cell.Y - 1, cell.Z},
 				// bottom right
-				Coord{cell.x, cell.y - 1, cell.z + 1},
+				Coord3D{cell.X, cell.Y - 1, cell.Z + 1},
 				// bottom left
-				Coord{cell.x - 1, cell.y, cell.z + 1},
+				Coord3D{cell.X - 1, cell.Y, cell.Z + 1},
 				// left
-				Coord{cell.x - 1, cell.y + 1, cell.z},
+				Coord3D{cell.X - 1, cell.Y + 1, cell.Z},
 				// top left
-				Coord{cell.x, cell.y + 1, cell.z - 1},
+				Coord3D{cell.X, cell.Y + 1, cell.Z - 1},
 			}
 
 			for _, neighbor := range neighbors {
@@ -118,11 +140,11 @@ func buildEmptyGrid() map[Coord]int {
 	return grid
 }
 
-func isValidCoord(c Coord) bool {
-	return between(c.x, -3, 3) &&
-		between(c.y, -3, 3) &&
-		between(c.z, -3, 3) &&
-		c.x+c.y+c.z == 0
+func isValidCoord(c Coord3D) bool {
+	return between(c.X, -3, 3) &&
+		between(c.Y, -3, 3) &&
+		between(c.Z, -3, 3) &&
+		c.X+c.Y+c.Z == 0
 }
 
 func between(v int, min int, max int) bool {
