@@ -1,7 +1,7 @@
 package engine
 
 import (
-	"abalone-go/helpers"
+	. "abalone-go/helpers"
 	"fmt"
 )
 
@@ -133,18 +133,14 @@ func buildEmptyGrid() map[Coord3D]int {
 		}
 	}
 
-	helpers.AssertEqual(37, len(grid))
+	AssertEqual(37, len(grid))
 
 	return grid
 }
 
 func isValidCoord(c Coord3D) bool {
-	return between(c.X, -3, 3) &&
-		between(c.Y, -3, 3) &&
-		between(c.Z, -3, 3) &&
+	return Between(c.X, -3, 3) &&
+		Between(c.Y, -3, 3) &&
+		Between(c.Z, -3, 3) &&
 		c.X+c.Y+c.Z == 0
-}
-
-func between(v int, min int, max int) bool {
-	return v >= min && v <= max
 }
