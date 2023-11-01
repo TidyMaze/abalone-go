@@ -74,18 +74,15 @@ func (g AbaloneGame) Show() string {
 	// bottom right cell (3, 3) is in (3,-6,3)
 
 	// for each horizontal line, print the line
-	for z := -3; z <= 3; z++ {
+	// x and y are in 2D coordinates
+	for y := -3; y <= 3; y++ {
 		// print the line
-		for hCoord := -3; hCoord <= 3; hCoord++ {
-			// find the cell
-			vCoord := -hCoord - z
-			cell := Coord3D{hCoord, vCoord, z}
-
-			// print the cell
-			if _, ok := g.grid[cell]; ok {
-				res += " 0 "
+		for x := -3; x <= 3; x++ {
+			coord := Coord2D{x, y}.To3D()
+			if v, ok := g.grid[coord]; ok {
+				res += fmt.Sprintf("%d ", v)
 			} else {
-				res += "   "
+				res += "  "
 			}
 		}
 
