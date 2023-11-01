@@ -1,7 +1,12 @@
 package engine
 
+import (
+	"errors"
+	"fmt"
+)
+
 /**
- * AbaloneGame is the main game class.
+ * Game is the main game class.
  * It contains the grid and the players.
  *
  * The grid is a 2D array of integers.
@@ -31,25 +36,53 @@ package engine
  * - top left (0, 1, -1)
  */
 
-type AbaloneGame struct {
+type Game struct {
 	grid map[Coord3D]int
 }
 
-func (g AbaloneGame) show() {
+func (g Game) show() {
 }
 
-func NewGame() *AbaloneGame {
-	game := &AbaloneGame{}
+func NewGame() *Game {
+	game := &Game{}
 	game.grid = buildEmptyGrid()
 	return game
 }
 
-func (g AbaloneGame) Show() string {
+func (g Game) Show() string {
 	grid := g.grid
 
 	return showGrid(grid)
 }
 
-func (g AbaloneGame) SetGrid(c Coord3D, v int) {
+func (g Game) SetGrid(c Coord3D, v int) {
 	g.grid[c] = v
+}
+
+func (g Game) Push(from Coord3D, direction Direction) error {
+	if !isValidCoord(from) {
+		return errors.New(fmt.Sprintf("Invalid coord %v", from))
+	}
+
+	cellContent := g.grid[from]
+	if cellContent == 0 {
+		return errors.New("No marble to push")
+	}
+
+	destination := from.add(direction)
+
+	if !isValidCoord(destination) {
+		return errors.New(fmt.Sprintf("Invalid destination %v", destination))
+	}
+
+	destinationContent := g.grid[destination]
+
+	if destinationContent != 0 {
+		return errors.New("Destination is not empty")
+	}
+
+	g.grid[from] = 0
+	g.grid[destination] = cellContent
+
+	return nil
 }

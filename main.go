@@ -23,4 +23,9 @@ func main() {
 
 	println("Game with 2 marbles:")
 	println(game.Show())
+
+	game.Push(Coord3D{X: -3, Y: 0, Z: 3}, Right)
+
+	println("Game pushed to the right:")
+	println(game.Show())
 }
