@@ -91,3 +91,19 @@ func (g Game) Push(from Coord3D, direction Direction) error {
 
 	return nil
 }
+
+func (g Game) Copy() Game {
+	newGame := Game{}
+	newGame.grid = copyGrid(g.grid)
+	return newGame
+}
+
+func copyGrid(grid map[Coord3D]int) map[Coord3D]int {
+	newGrid := make(map[Coord3D]int)
+
+	for k, v := range grid {
+		newGrid[k] = v
+	}
+
+	return newGrid
+}
