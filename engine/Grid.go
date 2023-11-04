@@ -52,7 +52,7 @@ func showGrid(grid map[Coord3D]int) string {
 func buildEmptyGrid() map[Coord3D]int {
 	grid := make(map[Coord3D]int)
 
-	queue := []Coord3D{Coord3D{0, 0, 0}}
+	queue := []Coord3D{{0, 0, 0}}
 
 	for len(queue) > 0 {
 		cell := queue[0]
@@ -64,17 +64,17 @@ func buildEmptyGrid() map[Coord3D]int {
 			// Add the 6 neighbors to the queue
 			neighbors := []Coord3D{
 				// top right
-				Coord3D{cell.X + 1, cell.Y, cell.Z - 1},
+				{cell.X + 1, cell.Y, cell.Z - 1},
 				// right
-				Coord3D{cell.X + 1, cell.Y - 1, cell.Z},
+				{cell.X + 1, cell.Y - 1, cell.Z},
 				// bottom right
-				Coord3D{cell.X, cell.Y - 1, cell.Z + 1},
+				{cell.X, cell.Y - 1, cell.Z + 1},
 				// bottom left
-				Coord3D{cell.X - 1, cell.Y, cell.Z + 1},
+				{cell.X - 1, cell.Y, cell.Z + 1},
 				// left
-				Coord3D{cell.X - 1, cell.Y + 1, cell.Z},
+				{cell.X - 1, cell.Y + 1, cell.Z},
 				// top left
-				Coord3D{cell.X, cell.Y + 1, cell.Z - 1},
+				{cell.X, cell.Y + 1, cell.Z - 1},
 			}
 
 			for _, neighbor := range neighbors {
