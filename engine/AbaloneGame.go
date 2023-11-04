@@ -3,6 +3,7 @@ package engine
 import (
 	"errors"
 	"fmt"
+	"log"
 )
 
 /**
@@ -68,6 +69,42 @@ func (g Game) Push(from Coord3D, direction Direction, count int) error {
 		return errors.New(fmt.Sprintf("Invalid from coord: %v", from))
 	}
 
+	cells := findAllCells(from, direction)
+	log.Println(cells)
+
+	// check that there are between 1 and 3 marbles in the first cells,
+	// followed by 0 marbles or an inferior number of enemy marbles
+
+	myColor := g.grid[from]
+
+	myFirstCells := []Coord3D{}
+	nextEnemyCells := []Coord3D{}
+
+	for _, cell := range cells {
+		cellContent, cellExists := g.grid[cell]
+		if !cellExists {
+			break
+		}
+
+		if cellContent == 0 {
+			break
+		} else if cellContent == myColor && len(nextEnemyCells) == 0 {
+			myFirstCells = append(myFirstCells, cell)
+		} else if cellContent != myColor && len(myFirstCells) > 0 {
+			nextEnemyCells = append(nextEnemyCells, cell)
+		}
+	}
+
+	if len(myFirstCells) == 0 {
+		return errors.New("no marble to push")
+	} else if len(myFirstCells) > 3 {
+		return errors.New("too many marbles to push (max 3)")
+	} else if len(nextEnemyCells) > 0 && len(myFirstCells) <= len(nextEnemyCells) {
+		return errors.New("not enough marbles to push enemy")
+	} else {
+		log.Println(fmt.Sprintf("Pushing my marbles: %v and enemy marbles: %v", myFirstCells, nextEnemyCells))
+	}
+
 	cellContent := g.grid[from]
 	if cellContent == 0 {
 		return errors.New("no marble to push")
@@ -90,6 +127,28 @@ func (g Game) Push(from Coord3D, direction Direction, count int) error {
 	g.grid[from] = 0
 
 	return nil
+}
+
+func findAllCells(from Coord3D, direction Direction) []Coord3D {
+	var cells []Coord3D
+
+	currentCell := from
+
+	// find all cells in the direction from the from cell, until we find a non-existent cell (out of the hexagon)
+	for {
+		cells = append(cells, currentCell)
+
+		destination := currentCell.Add(direction)
+
+		if !IsValidCoord(destination) {
+			break
+		}
+
+		currentCell = destination
+	}
+
+	return cells
+
 }
 
 func (g Game) Copy() Game {

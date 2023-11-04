@@ -26,7 +26,7 @@ func TestPushSingleBlocked(t *testing.T) {
 	gameCopy := game.Copy()
 	err := gameCopy.Push(Coord3D{0, 0, 0}, Right, 1)
 
-	helpers.AssertEqual("destination is not empty", err.Error())
+	helpers.AssertEqual("not enough marbles to push enemy", err.Error())
 }
 
 func TestPushTwo(t *testing.T) {
