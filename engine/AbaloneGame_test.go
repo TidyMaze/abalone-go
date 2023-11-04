@@ -94,5 +94,5 @@ func TestPushThreeBlocked(t *testing.T) {
 	gameCopy := game.Copy()
 	err := gameCopy.Push(Coord3D{-2, 2, 0}, Right, 3)
 
-	helpers.AssertEqual("not enough marbles to push enemy (got 3, need 4)", err.Error())
+	helpers.AssertEqual("too many enemy marbles to push (max 2, got 3)", err.Error())
 }

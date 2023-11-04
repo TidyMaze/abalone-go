@@ -99,6 +99,8 @@ func (g Game) Push(from Coord3D, direction Direction, count int) error {
 		return errors.New("no marble to push")
 	} else if len(myFirstCells) > 3 {
 		return errors.New(fmt.Sprintf("too many marbles to push (max 3, got %d)", len(myFirstCells)))
+	} else if len(nextEnemyCells) >= 3 {
+		return errors.New(fmt.Sprintf("too many enemy marbles to push (max 2, got %d)", len(nextEnemyCells)))
 	} else if len(nextEnemyCells) > 0 && len(myFirstCells) <= len(nextEnemyCells) {
 		return errors.New(fmt.Sprintf("not enough marbles to push enemy (got %d, need %d)", len(myFirstCells), len(nextEnemyCells)+1))
 	}
