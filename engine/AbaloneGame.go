@@ -74,13 +74,12 @@ func (g Game) Push(from Coord3D, direction Direction) error {
 
 	allCellsToPush := concatSlices(myFirstCells, nextEnemyCells)
 
-	// push marbles in inverse order (from the last to the first)
-	for i := len(allCellsToPush) - 1; i >= 0; i-- {
-		cellToPush := allCellsToPush[i]
-		err := g.pushSingle(cellToPush, direction)
-		if err != nil {
-			return err
-		}
+	err = reverseForEach(allCellsToPush, func(cellToPush Coord3D) error {
+		return g.pushSingle(cellToPush, direction)
+	})
+
+	if err != nil {
+		return err
 	}
 
 	return nil
@@ -201,4 +200,15 @@ func concatSlices[T any](slices ...[]T) []T {
 	}
 
 	return result
+}
+
+func reverseForEach[T any](slice []T, f func(T) error) error {
+	for i := len(slice) - 1; i >= 0; i-- {
+		err := f(slice[i])
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
