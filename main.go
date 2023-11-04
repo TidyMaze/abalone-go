@@ -25,7 +25,7 @@ func main() {
 	println("Game with 2 marbles:")
 	println(game.Show())
 
-	game.Push(Coord3D{X: -3, Y: 0, Z: 3}, Right, 1)
+	game.Push(Coord3D{X: -3, Y: 0, Z: 3}, Right)
 
 	println("Game pushed to the right:")
 	println(game.Show())
@@ -38,7 +38,7 @@ func main() {
 			break
 		}
 
-		err := game.Push(*currentMarbleCoord, Right, 1)
+		err := game.Push(*currentMarbleCoord, Right)
 		if err != nil {
 			panic(err)
 		}
