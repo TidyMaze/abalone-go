@@ -101,10 +101,30 @@ func (g Game) Push(from Coord3D, direction Direction, count int) error {
 		return errors.New("too many marbles to push (max 3)")
 	} else if len(nextEnemyCells) > 0 && len(myFirstCells) <= len(nextEnemyCells) {
 		return errors.New("not enough marbles to push enemy")
-	} else {
-		log.Println(fmt.Sprintf("Pushing my marbles: %v and enemy marbles: %v", myFirstCells, nextEnemyCells))
 	}
 
+	log.Println(fmt.Sprintf("Pushing my marbles: %v and enemy marbles: %v", myFirstCells, nextEnemyCells))
+
+	// push enemy marbles in inverse order (from the last to the first)
+	for i := len(nextEnemyCells) - 1; i >= 0; i-- {
+		err := g.pushSingle(nextEnemyCells[i], direction)
+		if err != nil {
+			return err
+		}
+	}
+
+	// push my marbles in reverse order (from the last to the first)
+	for i := len(myFirstCells) - 1; i >= 0; i-- {
+		err := g.pushSingle(myFirstCells[i], direction)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (g Game) pushSingle(from Coord3D, direction Direction) error {
 	cellContent := g.grid[from]
 	if cellContent == 0 {
 		return errors.New("no marble to push")
@@ -125,7 +145,6 @@ func (g Game) Push(from Coord3D, direction Direction, count int) error {
 	}
 
 	g.grid[from] = 0
-
 	return nil
 }
 
