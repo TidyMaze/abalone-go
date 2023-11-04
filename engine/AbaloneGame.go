@@ -92,6 +92,8 @@ func (g Game) Push(from Coord3D, direction Direction, count int) error {
 			myFirstCells = append(myFirstCells, cell)
 		} else if cellContent != myColor && len(myFirstCells) > 0 {
 			nextEnemyCells = append(nextEnemyCells, cell)
+		} else if cellContent == myColor && len(nextEnemyCells) > 0 {
+			return errors.New("my marbles are sandwiching enemy marbles")
 		}
 	}
 

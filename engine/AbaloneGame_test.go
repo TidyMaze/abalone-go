@@ -165,3 +165,16 @@ func TestThreePushTwo(t *testing.T) {
 
 	helpers.AssertEqual(showGrid(expected.grid), showGrid(gameCopy.grid))
 }
+
+func TestSandwich(t *testing.T) {
+	game := NewGame()
+	game.SetGrid(Coord3D{-2, 2, 0}, 1)
+	game.SetGrid(Coord3D{-1, 1, 0}, 1)
+	game.SetGrid(Coord3D{0, 0, 0}, 2)
+	game.SetGrid(Coord3D{1, -1, 0}, 1)
+
+	gameCopy := game.Copy()
+	err := gameCopy.Push(Coord3D{-2, 2, 0}, Right, 2)
+
+	helpers.AssertEqual("my marbles are sandwiching enemy marbles", err.Error())
+}
