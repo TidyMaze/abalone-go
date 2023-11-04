@@ -10,7 +10,10 @@ func TestPushSingle(t *testing.T) {
 	game.SetGrid(Coord3D{0, 0, 0}, 1)
 
 	gameCopy := game.Copy()
-	gameCopy.Push(Coord3D{0, 0, 0}, Right)
+	err := gameCopy.Push(Coord3D{0, 0, 0}, Right)
+	if err != nil {
+		t.Fatalf("Error: %v", err)
+	}
 
 	expected := NewGame()
 	expected.SetGrid(Coord3D{1, -1, 0}, 1)
