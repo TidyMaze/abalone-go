@@ -72,7 +72,9 @@ func (g Game) Push(from Coord3D, direction Direction) error {
 
 	log.Println(fmt.Sprintf("Pushing my marbles: %v and enemy marbles: %v", myFirstCells, nextEnemyCells))
 
-	allCellsToPush := append(myFirstCells, nextEnemyCells...)
+	var allCellsToPush []Coord3D
+	allCellsToPush = append(allCellsToPush, myFirstCells...)
+	allCellsToPush = append(allCellsToPush, nextEnemyCells...)
 
 	// push marbles in inverse order (from the last to the first)
 	for i := len(allCellsToPush) - 1; i >= 0; i-- {
