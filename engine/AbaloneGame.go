@@ -72,9 +72,7 @@ func (g Game) Push(from Coord3D, direction Direction) error {
 
 	log.Println(fmt.Sprintf("Pushing my marbles: %v and enemy marbles: %v", myFirstCells, nextEnemyCells))
 
-	var allCellsToPush []Coord3D
-	allCellsToPush = append(allCellsToPush, myFirstCells...)
-	allCellsToPush = append(allCellsToPush, nextEnemyCells...)
+	allCellsToPush := concatSlices(myFirstCells, nextEnemyCells)
 
 	// push marbles in inverse order (from the last to the first)
 	for i := len(allCellsToPush) - 1; i >= 0; i-- {
@@ -193,4 +191,14 @@ func copyGrid(grid map[Coord3D]int) map[Coord3D]int {
 	}
 
 	return newGrid
+}
+
+func concatSlices[T any](slices ...[]T) []T {
+	var result []T
+
+	for _, slice := range slices {
+		result = append(result, slice...)
+	}
+
+	return result
 }
