@@ -72,17 +72,12 @@ func (g Game) Push(from Coord3D, direction Direction) error {
 
 	log.Println(fmt.Sprintf("Pushing my marbles: %v and enemy marbles: %v", myFirstCells, nextEnemyCells))
 
-	// push enemy marbles in inverse order (from the last to the first)
-	for i := len(nextEnemyCells) - 1; i >= 0; i-- {
-		err := g.pushSingle(nextEnemyCells[i], direction)
-		if err != nil {
-			return err
-		}
-	}
+	allCellsToPush := append(myFirstCells, nextEnemyCells...)
 
-	// push my marbles in reverse order (from the last to the first)
-	for i := len(myFirstCells) - 1; i >= 0; i-- {
-		err := g.pushSingle(myFirstCells[i], direction)
+	// push marbles in inverse order (from the last to the first)
+	for i := len(allCellsToPush) - 1; i >= 0; i-- {
+		cellToPush := allCellsToPush[i]
+		err := g.pushSingle(cellToPush, direction)
 		if err != nil {
 			return err
 		}
@@ -104,8 +99,8 @@ func (g Game) checkCanPush(from Coord3D, direction Direction) ([]Coord3D, []Coor
 
 	myColor := g.grid[from]
 
-	myFirstCells := []Coord3D{}
-	nextEnemyCells := []Coord3D{}
+	var myFirstCells []Coord3D
+	var nextEnemyCells []Coord3D
 
 	for _, cell := range cells {
 		cellContent, cellExists := g.grid[cell]
