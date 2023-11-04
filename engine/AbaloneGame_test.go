@@ -81,3 +81,18 @@ func TestPushThree(t *testing.T) {
 
 	helpers.AssertEqual(showGrid(expected.grid), showGrid(gameCopy.grid))
 }
+
+func TestPushThreeBlocked(t *testing.T) {
+	game := NewGame()
+	game.SetGrid(Coord3D{-2, 2, 0}, 1)
+	game.SetGrid(Coord3D{-1, 1, 0}, 1)
+	game.SetGrid(Coord3D{0, 0, 0}, 1)
+	game.SetGrid(Coord3D{1, -1, 0}, 2)
+	game.SetGrid(Coord3D{2, -2, 0}, 2)
+	game.SetGrid(Coord3D{3, -3, 0}, 2)
+
+	gameCopy := game.Copy()
+	err := gameCopy.Push(Coord3D{-2, 2, 0}, Right, 3)
+
+	helpers.AssertEqual("not enough marbles to push enemy (got 3, need 4)", err.Error())
+}
