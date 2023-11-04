@@ -65,7 +65,7 @@ func main() {
 func fillRandomly(game *Game) {
 	for y := -3; y <= 3; y++ {
 		for x := -3; x <= 3; x++ {
-			coord := Coord2D{x, y}.To3D()
+			coord := Coord2D{X: x, Y: y}.To3D()
 
 			if IsValidCoord(coord) {
 				game.SetGrid(coord, rand.Intn(3))
