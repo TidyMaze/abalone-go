@@ -22,6 +22,8 @@ func main() {
 	println(currentGame.Show())
 
 	for {
+		log.Println(fmt.Sprintf("=========== Turn %d ===========", currentGame.Turn))
+
 		validMoves := currentGame.GetValidMoves()
 
 		if len(validMoves) == 0 {

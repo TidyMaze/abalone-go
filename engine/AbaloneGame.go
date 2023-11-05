@@ -42,6 +42,7 @@ type Game struct {
 	grid          map[Coord3D]int
 	score         map[int]int
 	currentPlayer int
+	Turn          int
 }
 
 func NewGame() *Game {
@@ -110,6 +111,7 @@ func (g *Game) Push(from Coord3D, direction Direction) error {
 
 	log.Println(fmt.Sprintf("Switching player from %d to %d", g.currentPlayer, 3-g.currentPlayer))
 	g.currentPlayer = 3 - g.currentPlayer
+	g.Turn += 1
 
 	return nil
 }
