@@ -76,7 +76,9 @@ func (g *Game) GetGrid(c Coord3D) int {
 }
 
 func (g *Game) Push(from Coord3D, direction Direction) error {
-	myColor := g.grid[from]
+	if g.currentPlayer != g.grid[from] {
+		return errors.New(fmt.Sprintf("Cannot push marble from %v: it is not the current player's marble (current player: %d, marble color: %d)", from, g.currentPlayer, g.grid[from]))
+	}
 
 	myFirstCells, nextEnemyCells, err := g.checkCanPush(from, direction)
 	if err != nil {
@@ -107,7 +109,7 @@ func (g *Game) Push(from Coord3D, direction Direction) error {
 	}
 
 	if capturedMarble {
-		g.score[myColor] += 1
+		g.score[g.currentPlayer] += 1
 	}
 
 	log.Println(fmt.Sprintf("Switching player from %d to %d", g.currentPlayer, 3-g.currentPlayer))
