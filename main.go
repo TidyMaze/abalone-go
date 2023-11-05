@@ -59,8 +59,8 @@ func randIn[T any](slice []T) T {
 }
 
 func fillRandomly(game *Game) {
-	for y := -3; y <= 3; y++ {
-		for x := -3; x <= 3; x++ {
+	for y := -4; y <= 4; y++ {
+		for x := -4; x <= 4; x++ {
 			coord := Coord2D{X: x, Y: y}.To3D()
 
 			if IsValidCoord(coord) {
