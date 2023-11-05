@@ -276,5 +276,5 @@ func TestCannotSuicide(t *testing.T) {
 
 	err := game.Push(Coord3D{3, -3, 0}, Right)
 
-	helpers.AssertEqual("Cannot push its own marbles out of the hexagon", err.Error())
+	helpers.AssertEqual("cannot push its own marbles out of the hexagon", err.Error())
 }
