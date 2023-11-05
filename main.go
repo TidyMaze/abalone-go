@@ -2,23 +2,17 @@ package main
 
 import (
 	. "abalone-go/engine"
-	"abalone-go/helpers"
 	"fmt"
 	"log"
 	"math/rand"
 )
 
 func main() {
-	helpers.AssertEqual(Coord2D{X: 3, Y: -3}.To3D(), Coord3D{X: 3, Z: -3})
-	helpers.AssertEqual(Coord2D{X: -3, Y: 3}.To3D(), Coord3D{X: -3, Z: 3})
-
-	fmt.Println("Hello, World!")
-
 	// Create a new game
 	currentGame := NewGame()
 	fillRandomly(currentGame)
 
-	println("Random game:")
+	log.Println("Random game:")
 	println(currentGame.Show())
 
 	for {
