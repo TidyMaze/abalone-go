@@ -43,7 +43,7 @@ type Game struct {
 	score         map[int]int
 	currentPlayer int
 	Turn          int
-	winner        int // 0 if no winner, 1 or 2 if there is a winner
+	Winner        int // 0 if no Winner, 1 or 2 if there is a Winner
 }
 
 func NewGame() *Game {
@@ -67,6 +67,10 @@ func (g *Game) Show() string {
 	res += fmt.Sprintf("Grid:\n%s", showGrid(g.grid))
 
 	return res
+}
+
+func (g *Game) IsOver() bool {
+	return g.Winner != 0
 }
 
 func (g *Game) SetGrid(c Coord3D, v int) {
@@ -115,9 +119,9 @@ func (g *Game) Push(from Coord3D, direction Direction) error {
 	g.Turn += 1
 
 	if g.score[1] == 6 {
-		g.winner = 1
+		g.Winner = 1
 	} else if g.score[2] == 6 {
-		g.winner = 2
+		g.Winner = 2
 	}
 
 	return nil
@@ -224,7 +228,7 @@ func (g *Game) Copy() Game {
 	newGame.score = copyScore(g.score)
 	newGame.currentPlayer = g.currentPlayer
 	newGame.Turn = g.Turn
-	newGame.winner = g.winner
+	newGame.Winner = g.Winner
 	return newGame
 }
 

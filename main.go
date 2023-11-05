@@ -15,7 +15,7 @@ func main() {
 	log.Println("Random game:")
 	log.Println(currentGame.Show())
 
-	for {
+	for !currentGame.IsOver() {
 		log.Println(fmt.Sprintf("=========== Turn %d ===========", currentGame.Turn))
 
 		validMoves := currentGame.GetValidMoves()
@@ -44,6 +44,14 @@ func main() {
 		default:
 			panic("Invalid move type" + fmt.Sprintf("%T", t))
 		}
+	}
+
+	log.Println("Game over")
+
+	if currentGame.Winner == 0 {
+		log.Println("Draw")
+	} else {
+		log.Println(fmt.Sprintf("Winner: %d", currentGame.Winner))
 	}
 }
 
