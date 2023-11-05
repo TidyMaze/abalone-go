@@ -38,14 +38,21 @@ import (
  */
 
 type Game struct {
-	grid map[Coord3D]int
+	grid  map[Coord3D]int
+	score map[int]int
 }
 
 func (g Game) show() {
 }
 
 func NewGame() *Game {
-	game := &Game{}
+	game := &Game{
+		score: make(map[int]int),
+	}
+
+	game.score[1] = 0
+	game.score[2] = 0
+
 	game.grid = buildEmptyGrid()
 	return game
 }
@@ -64,10 +71,12 @@ func (g Game) GetGrid(c Coord3D) int {
 	return g.grid[c]
 }
 
-func (g Game) Push(from Coord3D, direction Direction) (bool, error) {
+func (g Game) Push(from Coord3D, direction Direction) error {
+	myColor := g.grid[from]
+
 	myFirstCells, nextEnemyCells, err := g.checkCanPush(from, direction)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	log.Println(fmt.Sprintf("Pushing my marbles: %v and enemy marbles: %v", myFirstCells, nextEnemyCells))
@@ -90,10 +99,14 @@ func (g Game) Push(from Coord3D, direction Direction) (bool, error) {
 	})
 
 	if err != nil {
-		return false, err
+		return err
 	}
 
-	return capturedMarble, nil
+	if capturedMarble {
+		g.score[myColor] += 1
+	}
+
+	return nil
 }
 
 func (g Game) checkCanPush(from Coord3D, direction Direction) ([]Coord3D, []Coord3D, error) {
@@ -193,7 +206,18 @@ func findAllCells(from Coord3D, direction Direction) []Coord3D {
 func (g Game) Copy() Game {
 	newGame := Game{}
 	newGame.grid = copyGrid(g.grid)
+	newGame.score = copyScore(g.score)
 	return newGame
+}
+
+func copyScore(score map[int]int) map[int]int {
+	newScore := make(map[int]int)
+
+	for k, v := range score {
+		newScore[k] = v
+	}
+
+	return newScore
 }
 
 func copyGrid(grid map[Coord3D]int) map[Coord3D]int {
