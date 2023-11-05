@@ -39,8 +39,9 @@ import (
  */
 
 type Game struct {
-	grid  map[Coord3D]int
-	score map[int]int
+	grid          map[Coord3D]int
+	score         map[int]int
+	currentPlayer int
 }
 
 func (g Game) show() {
@@ -216,11 +217,13 @@ func (g Game) GetValidMoves() []Move {
 	pushLines := make([]PushLine, 0)
 
 	for coord, _ := range g.grid {
-		for _, direction := range Directions {
-			move := PushLine{From: coord, Direction: direction}
-			_, _, err := g.checkCanPush(coord, direction)
-			if err == nil {
-				pushLines = append(pushLines, move)
+		if g.grid[coord] == g.currentPlayer {
+			for _, direction := range Directions {
+				move := PushLine{From: coord, Direction: direction}
+				_, _, err := g.checkCanPush(coord, direction)
+				if err == nil {
+					pushLines = append(pushLines, move)
+				}
 			}
 		}
 	}

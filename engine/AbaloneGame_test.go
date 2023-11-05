@@ -207,6 +207,7 @@ func TestPushSingleCaptured(t *testing.T) {
 func TestGetValidMovesWithSingleCentralMarble(t *testing.T) {
 	game := NewGame()
 	game.SetGrid(Coord3D{0, 0, 0}, 1)
+	game.currentPlayer = 1
 
 	moves := game.GetValidMoves()
 
@@ -226,6 +227,7 @@ func TestGetValidMovesWithTwoMarbles(t *testing.T) {
 	game := NewGame()
 	game.SetGrid(Coord3D{0, 0, 0}, 1)
 	game.SetGrid(Coord3D{1, -1, 0}, 1)
+	game.currentPlayer = 1
 
 	moves := game.GetValidMoves()
 
