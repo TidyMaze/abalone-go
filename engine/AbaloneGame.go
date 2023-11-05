@@ -116,7 +116,6 @@ func (g Game) checkCanPush(from Coord3D, direction Direction) ([]Coord3D, []Coor
 	}
 
 	cells := findAllCells(from, direction)
-	log.Println(cells)
 
 	// check that there are between 1 and 3 marbles in the first cells,
 	// followed by 0 marbles or an inferior number of enemy marbles
@@ -233,6 +232,9 @@ func (g Game) GetValidMoves() []Move {
 	sort.Slice(pushLines, func(i, j int) bool {
 		iCellIn2D := pushLines[i].From.To2D()
 		jCellIn2D := pushLines[j].From.To2D()
+
+		log.Println(fmt.Sprintf("iCell %v in 2D: %v", pushLines[i].From, iCellIn2D))
+		log.Println(fmt.Sprintf("jCell %v in 2D: %v", pushLines[j].From, jCellIn2D))
 
 		if iCellIn2D.Y == jCellIn2D.Y {
 			if iCellIn2D.X == jCellIn2D.X {

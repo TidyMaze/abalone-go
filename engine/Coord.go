@@ -18,7 +18,7 @@ func (c Coord2D) To3D() Coord3D {
 }
 
 func (c Coord3D) To2D() Coord2D {
-	return Coord2D{c.X, c.Y}
+	return Coord2D{c.X, c.Z}
 }
 
 func (c Coord3D) Add(direction Direction) Coord3D {

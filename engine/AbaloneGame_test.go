@@ -204,7 +204,7 @@ func TestPushSingleCaptured(t *testing.T) {
 	expected.SetGrid(Coord3D{3, -3, 0}, 1)
 }
 
-func TestGetValidMoves(t *testing.T) {
+func TestGetValidMovesWithSingleCentralMarble(t *testing.T) {
 	game := NewGame()
 	game.SetGrid(Coord3D{0, 0, 0}, 1)
 
@@ -217,6 +217,31 @@ func TestGetValidMoves(t *testing.T) {
 		PushLine{From: Coord3D{0, 0, 0}, Direction: BottomLeft},
 		PushLine{From: Coord3D{0, 0, 0}, Direction: Left},
 		PushLine{From: Coord3D{0, 0, 0}, Direction: TopLeft},
+	}
+
+	helpers.AssertEqual(expected, moves)
+}
+
+func TestGetValidMovesWithTwoMarbles(t *testing.T) {
+	game := NewGame()
+	game.SetGrid(Coord3D{0, 0, 0}, 1)
+	game.SetGrid(Coord3D{1, -1, 0}, 1)
+
+	moves := game.GetValidMoves()
+
+	expected := []Move{
+		PushLine{From: Coord3D{0, 0, 0}, Direction: TopRight},
+		PushLine{From: Coord3D{0, 0, 0}, Direction: Right},
+		PushLine{From: Coord3D{0, 0, 0}, Direction: BottomRight},
+		PushLine{From: Coord3D{0, 0, 0}, Direction: BottomLeft},
+		PushLine{From: Coord3D{0, 0, 0}, Direction: Left},
+		PushLine{From: Coord3D{0, 0, 0}, Direction: TopLeft},
+		PushLine{From: Coord3D{1, -1, 0}, Direction: TopRight},
+		PushLine{From: Coord3D{1, -1, 0}, Direction: Right},
+		PushLine{From: Coord3D{1, -1, 0}, Direction: BottomRight},
+		PushLine{From: Coord3D{1, -1, 0}, Direction: BottomLeft},
+		PushLine{From: Coord3D{1, -1, 0}, Direction: Left},
+		PushLine{From: Coord3D{1, -1, 0}, Direction: TopLeft},
 	}
 
 	helpers.AssertEqual(expected, moves)
