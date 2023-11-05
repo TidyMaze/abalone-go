@@ -85,7 +85,7 @@ func buildEmptyGrid() map[Coord3D]int {
 		}
 	}
 
-	AssertEqual(37, len(grid))
+	AssertEqual(61, len(grid))
 
 	return grid
 }

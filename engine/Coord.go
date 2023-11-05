@@ -50,8 +50,8 @@ func (c Coord3D) Add(direction Direction) Coord3D {
 }
 
 func IsValidCoord(c Coord3D) bool {
-	return helpers.Between(c.X, -3, 3) &&
-		helpers.Between(c.Y, -3, 3) &&
-		helpers.Between(c.Z, -3, 3) &&
+	return helpers.Between(c.X, -4, 4) &&
+		helpers.Between(c.Y, -4, 4) &&
+		helpers.Between(c.Z, -4, 4) &&
 		c.X+c.Y+c.Z == 0
 }

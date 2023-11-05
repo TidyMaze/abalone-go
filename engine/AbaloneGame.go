@@ -28,7 +28,7 @@ import (
  * - y axis is 60 degrees to the top left
  * - z axis is vertical to the bottom
  *
- * The hexagon is 4 cells wide in the outer ring (side size) and 7 cells wide in the inner ring (diameter).
+ * The hexagon is 5 cells wide in the outer ring (side size) and 9 cells wide in the inner ring (diameter).
  * There are 6 directions expressed in (x,y,z) coordinates:
  * - top right (1, 0, -1)
  * - right (1, -1, 0)
