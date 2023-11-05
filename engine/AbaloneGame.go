@@ -44,12 +44,10 @@ type Game struct {
 	currentPlayer int
 }
 
-func (g Game) show() {
-}
-
 func NewGame() *Game {
 	game := &Game{
-		score: make(map[int]int),
+		score:         make(map[int]int),
+		currentPlayer: 1,
 	}
 
 	game.score[1] = 0
@@ -60,9 +58,13 @@ func NewGame() *Game {
 }
 
 func (g Game) Show() string {
-	grid := g.grid
+	res := ""
 
-	return showGrid(grid)
+	res += fmt.Sprintf("Current player: %d\n", g.currentPlayer)
+	res += fmt.Sprintf("Score: %v\n", g.score)
+	res += fmt.Sprintf("Grid:\n%s", showGrid(g.grid))
+
+	return res
 }
 
 func (g Game) SetGrid(c Coord3D, v int) {
@@ -107,6 +109,8 @@ func (g Game) Push(from Coord3D, direction Direction) error {
 	if capturedMarble {
 		g.score[myColor] += 1
 	}
+
+	g.currentPlayer = 3 - g.currentPlayer
 
 	return nil
 }
@@ -208,6 +212,7 @@ func (g Game) Copy() Game {
 	newGame := Game{}
 	newGame.grid = copyGrid(g.grid)
 	newGame.score = copyScore(g.score)
+	newGame.currentPlayer = g.currentPlayer
 	return newGame
 }
 
