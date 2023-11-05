@@ -57,7 +57,7 @@ func NewGame() *Game {
 	return game
 }
 
-func (g Game) Show() string {
+func (g *Game) Show() string {
 	res := ""
 
 	res += fmt.Sprintf("Current player: %d\n", g.currentPlayer)
@@ -67,15 +67,15 @@ func (g Game) Show() string {
 	return res
 }
 
-func (g Game) SetGrid(c Coord3D, v int) {
+func (g *Game) SetGrid(c Coord3D, v int) {
 	g.grid[c] = v
 }
 
-func (g Game) GetGrid(c Coord3D) int {
+func (g *Game) GetGrid(c Coord3D) int {
 	return g.grid[c]
 }
 
-func (g Game) Push(from Coord3D, direction Direction) error {
+func (g *Game) Push(from Coord3D, direction Direction) error {
 	myColor := g.grid[from]
 
 	myFirstCells, nextEnemyCells, err := g.checkCanPush(from, direction)
@@ -110,12 +110,13 @@ func (g Game) Push(from Coord3D, direction Direction) error {
 		g.score[myColor] += 1
 	}
 
+	log.Println(fmt.Sprintf("Switching player from %d to %d", g.currentPlayer, 3-g.currentPlayer))
 	g.currentPlayer = 3 - g.currentPlayer
 
 	return nil
 }
 
-func (g Game) checkCanPush(from Coord3D, direction Direction) ([]Coord3D, []Coord3D, error) {
+func (g *Game) checkCanPush(from Coord3D, direction Direction) ([]Coord3D, []Coord3D, error) {
 	if !IsValidCoord(from) {
 		return nil, nil, errors.New(fmt.Sprintf("Invalid from coord: %v", from))
 	}
@@ -159,7 +160,7 @@ func (g Game) checkCanPush(from Coord3D, direction Direction) ([]Coord3D, []Coor
 	return myFirstCells, nextEnemyCells, nil
 }
 
-func (g Game) pushSingle(from Coord3D, direction Direction) (bool, error) {
+func (g *Game) pushSingle(from Coord3D, direction Direction) (bool, error) {
 	cellContent := g.grid[from]
 	if cellContent == 0 {
 		return false, errors.New("no marble to push")
@@ -208,7 +209,7 @@ func findAllCells(from Coord3D, direction Direction) []Coord3D {
 
 }
 
-func (g Game) Copy() Game {
+func (g *Game) Copy() Game {
 	newGame := Game{}
 	newGame.grid = copyGrid(g.grid)
 	newGame.score = copyScore(g.score)
@@ -216,7 +217,7 @@ func (g Game) Copy() Game {
 	return newGame
 }
 
-func (g Game) GetValidMoves() []Move {
+func (g *Game) GetValidMoves() []Move {
 	moves := make([]Move, 0)
 
 	pushLines := make([]PushLine, 0)
