@@ -155,7 +155,7 @@ func (g Game) pushSingle(from Coord3D, direction Direction) (bool, error) {
 
 	if destinationExists {
 		if destinationContent != 0 {
-			return false, errors.New("destination is not empty")
+			return false, errors.New(fmt.Sprintf("destination is not empty: %v", destination))
 		}
 
 		g.grid[destination] = cellContent

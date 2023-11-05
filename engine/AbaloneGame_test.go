@@ -181,3 +181,23 @@ func TestSandwich(t *testing.T) {
 
 	helpers.AssertEqual("my marbles are sandwiching enemy marbles", err.Error())
 }
+
+func TestPushSingleCaptured(t *testing.T) {
+	game := NewGame()
+	game.SetGrid(Coord3D{1, -1, 0}, 1)
+	game.SetGrid(Coord3D{2, -2, 0}, 1)
+	game.SetGrid(Coord3D{3, -3, 0}, 2)
+
+	gameCopy := game.Copy()
+	captured, err := gameCopy.Push(Coord3D{1, -1, 0}, Right)
+
+	if err != nil {
+		t.Fatalf("Error: %v", err)
+	}
+
+	helpers.AssertEqual(true, captured)
+
+	expected := NewGame()
+	expected.SetGrid(Coord3D{2, -2, 0}, 1)
+	expected.SetGrid(Coord3D{3, -3, 0}, 1)
+}
