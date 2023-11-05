@@ -64,25 +64,36 @@ func (g Game) GetGrid(c Coord3D) int {
 	return g.grid[c]
 }
 
-func (g Game) Push(from Coord3D, direction Direction) error {
+func (g Game) Push(from Coord3D, direction Direction) (bool, error) {
 	myFirstCells, nextEnemyCells, err := g.checkCanPush(from, direction)
 	if err != nil {
-		return err
+		return false, err
 	}
 
 	log.Println(fmt.Sprintf("Pushing my marbles: %v and enemy marbles: %v", myFirstCells, nextEnemyCells))
 
 	allCellsToPush := concatSlices(myFirstCells, nextEnemyCells)
 
+	capturedMarble := false
+
 	err = reverseForEach(allCellsToPush, func(cellToPush Coord3D) error {
-		return g.pushSingle(cellToPush, direction)
+		captured, err := g.pushSingle(cellToPush, direction)
+		if err != nil {
+			return err
+		}
+
+		if captured {
+			capturedMarble = true
+		}
+
+		return nil
 	})
 
 	if err != nil {
-		return err
+		return false, err
 	}
 
-	return nil
+	return capturedMarble, nil
 }
 
 func (g Game) checkCanPush(from Coord3D, direction Direction) ([]Coord3D, []Coord3D, error) {
@@ -130,28 +141,31 @@ func (g Game) checkCanPush(from Coord3D, direction Direction) ([]Coord3D, []Coor
 	return myFirstCells, nextEnemyCells, nil
 }
 
-func (g Game) pushSingle(from Coord3D, direction Direction) error {
+func (g Game) pushSingle(from Coord3D, direction Direction) (bool, error) {
 	cellContent := g.grid[from]
 	if cellContent == 0 {
-		return errors.New("no marble to push")
+		return false, errors.New("no marble to push")
 	}
 
 	destination := from.Add(direction)
 
 	destinationContent, destinationExists := g.grid[destination]
 
+	capturedMarble := false
+
 	if destinationExists {
 		if destinationContent != 0 {
-			return errors.New("destination is not empty")
+			return false, errors.New("destination is not empty")
 		}
 
 		g.grid[destination] = cellContent
 	} else {
 		println("Captured a marble")
+		capturedMarble = true
 	}
 
 	g.grid[from] = 0
-	return nil
+	return capturedMarble, nil
 }
 
 func findAllCells(from Coord3D, direction Direction) []Coord3D {
