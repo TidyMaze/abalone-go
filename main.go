@@ -31,7 +31,7 @@ func main() {
 
 		log.Println(fmt.Sprintf("Valid moves size: %d", len(validMoves)))
 
-		firstValidMove := validMoves[0]
+		firstValidMove := randIn(validMoves)
 
 		switch t := firstValidMove.(type) {
 		case PushLine:
@@ -49,6 +49,10 @@ func main() {
 			panic("Invalid move type" + fmt.Sprintf("%T", t))
 		}
 	}
+}
+
+func randIn[T any](slice []T) T {
+	return slice[rand.Intn(len(slice))]
 }
 
 func fillRandomly(game *Game) {
