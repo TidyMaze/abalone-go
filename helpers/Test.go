@@ -1,9 +1,12 @@
 package helpers
 
-import "fmt"
+import (
+	"fmt"
+	"reflect"
+)
 
 func AssertEqual(expected interface{}, actual interface{}) {
-	if expected != actual {
+	if !reflect.DeepEqual(expected, actual) {
 		panic(fmt.Sprintf("Expected %v, got %v", expected, actual))
 	}
 }
