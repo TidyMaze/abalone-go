@@ -181,7 +181,7 @@ func (g *Game) pushSingle(from Coord3D, direction Direction) (bool, error) {
 
 		g.grid[destination] = cellContent
 	} else {
-		println("Captured a marble")
+		log.Println("Captured a marble")
 		capturedMarble = true
 	}
 
