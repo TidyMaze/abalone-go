@@ -222,7 +222,7 @@ func (g *Game) GetValidMoves() []Move {
 
 	pushLines := make([]PushLine, 0)
 
-	for coord, _ := range g.grid {
+	for coord := range g.grid {
 		if g.grid[coord] == g.currentPlayer {
 			for _, direction := range Directions {
 				move := PushLine{From: coord, Direction: direction}
