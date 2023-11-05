@@ -223,6 +223,8 @@ func (g *Game) Copy() Game {
 	newGame.grid = copyGrid(g.grid)
 	newGame.score = copyScore(g.score)
 	newGame.currentPlayer = g.currentPlayer
+	newGame.Turn = g.Turn
+	newGame.winner = g.winner
 	return newGame
 }
 
