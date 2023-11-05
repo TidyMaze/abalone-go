@@ -39,8 +39,7 @@ func main() {
 				panic(err)
 			}
 
-			log.Println("New game state:")
-			log.Println(currentGame.Show())
+			log.Println(fmt.Sprintf("New game state: %s", currentGame.Show()))
 		default:
 			panic("Invalid move type" + fmt.Sprintf("%T", t))
 		}
