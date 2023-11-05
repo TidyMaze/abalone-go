@@ -8,16 +8,16 @@ import (
 func showGrid(grid map[Coord3D]int) string {
 	res := ""
 
-	// top left cell (-3, -3) is in (-3,3,6)
-	// bottom right cell (3, 3) is in (3,-6,3)
+	// top left cell (-4, -4) is in (0,4,-4)
+	// bottom right cell (4, 4) is in (0,-4,4)
 
 	// for each horizontal line, print the line
 	// x and y are in 2D coordinates
-	for y := -3; y <= 3; y++ {
+	for y := -4; y <= 4; y++ {
 		line := ""
 
 		// print the line
-		for x := -3; x <= 3; x++ {
+		for x := -4; x <= 4; x++ {
 			coord := Coord2D{x, y}.To3D()
 
 			if v, ok := grid[coord]; ok {
@@ -28,6 +28,8 @@ func showGrid(grid map[Coord3D]int) string {
 		}
 
 		switch y {
+		case -4:
+			line = line[4:]
 		case -3:
 			line = line[3:]
 		case -2:
@@ -41,6 +43,8 @@ func showGrid(grid map[Coord3D]int) string {
 			line = "  " + line
 		case 3:
 			line = "   " + line
+		case 4:
+			line = "    " + line
 		}
 
 		res += fmt.Sprintf("%s\n", line)
