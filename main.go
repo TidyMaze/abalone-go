@@ -4,6 +4,7 @@ import (
 	. "abalone-go/engine"
 	"abalone-go/helpers"
 	"fmt"
+	"log"
 	"math/rand"
 )
 
@@ -14,55 +15,40 @@ func main() {
 	fmt.Println("Hello, World!")
 
 	// Create a new game
-	game := NewGame()
+	currentGame := NewGame()
+	fillRandomly(currentGame)
 
-	println("Empty game:")
-	println(game.Show())
-
-	game.SetGrid(Coord2D{X: 3, Y: -3}.To3D(), 1)
-	game.SetGrid(Coord2D{X: -3, Y: 3}.To3D(), 1)
-
-	println("Game with 2 marbles:")
-	println(game.Show())
-
-	err := game.Push(Coord3D{X: -3, Y: 0, Z: 3}, Right)
-	if err != nil {
-		panic(err)
-	}
-
-	println("Game pushed to the right:")
-	println(game.Show())
-
-	currentMarbleCoord := &Coord3D{X: -2, Y: -1, Z: 3}
+	println("Random game:")
+	println(currentGame.Show())
 
 	for {
-		if currentMarbleCoord == nil {
-			println("No more marble to push")
+		validMoves := currentGame.GetValidMoves()
+
+		if len(validMoves) == 0 {
+			println("No more valid moves")
 			break
 		}
 
-		err := game.Push(*currentMarbleCoord, Right)
-		if err != nil {
-			panic(err)
+		log.Println(fmt.Sprintf("Valid moves size: %d", len(validMoves)))
+
+		firstValidMove := validMoves[0]
+
+		switch t := firstValidMove.(type) {
+		case PushLine:
+			pushLine := firstValidMove.(PushLine)
+
+			log.Println(fmt.Sprintf("Pushing line: %v", t))
+			err := currentGame.Push(pushLine.From, pushLine.Direction)
+			if err != nil {
+				panic(err)
+			}
+
+			println("New game state:")
+			println(currentGame.Show())
+		default:
+			panic("Invalid move type" + fmt.Sprintf("%T", t))
 		}
-
-		destination := currentMarbleCoord.Add(Right)
-
-		if !IsValidCoord(destination) {
-			currentMarbleCoord = nil
-		} else {
-			currentMarbleCoord = &destination
-		}
-
-		println("Game pushed to the right:")
-		println(game.Show())
 	}
-
-	randomGame := NewGame()
-	fillRandomly(randomGame)
-
-	println("Random game:")
-	println(randomGame.Show())
 }
 
 func fillRandomly(game *Game) {

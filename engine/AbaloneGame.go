@@ -242,8 +242,8 @@ func (g *Game) GetValidMoves() []Move {
 		iCellIn2D := pushLines[i].From.To2D()
 		jCellIn2D := pushLines[j].From.To2D()
 
-		log.Println(fmt.Sprintf("iCell %v in 2D: %v", pushLines[i].From, iCellIn2D))
-		log.Println(fmt.Sprintf("jCell %v in 2D: %v", pushLines[j].From, jCellIn2D))
+		//log.Println(fmt.Sprintf("iCell %v in 2D: %v", pushLines[i].From, iCellIn2D))
+		//log.Println(fmt.Sprintf("jCell %v in 2D: %v", pushLines[j].From, jCellIn2D))
 
 		if iCellIn2D.Y == jCellIn2D.Y {
 			if iCellIn2D.X == jCellIn2D.X {
