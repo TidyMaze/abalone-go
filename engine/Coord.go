@@ -1,11 +1,18 @@
 package engine
 
-import "abalone-go/helpers"
+import (
+	"abalone-go/helpers"
+	"fmt"
+)
 
 type Coord3D struct {
 	X int
 	Y int
 	Z int
+}
+
+func (c Coord3D) String() string {
+	return fmt.Sprintf("(x: %d, y: %d, z: %d)", c.X, c.Y, c.Z)
 }
 
 type Coord2D struct {

@@ -12,3 +12,22 @@ const (
 )
 
 var Directions = [6]Direction{TopRight, Right, BottomRight, BottomLeft, Left, TopLeft}
+
+func (d Direction) String() string {
+	switch d {
+	case TopRight:
+		return "TopRight"
+	case Right:
+		return "Right"
+	case BottomRight:
+		return "BottomRight"
+	case BottomLeft:
+		return "BottomLeft"
+	case Left:
+		return "Left"
+	case TopLeft:
+		return "TopLeft"
+	default:
+		panic("Invalid direction")
+	}
+}
