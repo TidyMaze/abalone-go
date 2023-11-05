@@ -210,6 +210,10 @@ func (g Game) Copy() Game {
 	return newGame
 }
 
+func (g Game) GetValidMoves() []Move {
+	return nil
+}
+
 func copyScore(score map[int]int) map[int]int {
 	newScore := make(map[int]int)
 
