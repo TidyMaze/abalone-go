@@ -128,7 +128,9 @@ func (g *Game) checkCanPush(from Coord3D, direction Direction) ([]Coord3D, []Coo
 	// check that there are between 1 and 3 marbles in the first cells,
 	// followed by 0 marbles or an inferior number of enemy marbles
 
-	myColor := g.grid[from]
+	if g.currentPlayer != g.grid[from] {
+		return nil, nil, errors.New(fmt.Sprintf("Cannot push marble from %v: it is not the current player's marble (current player: %d, marble color: %d)", from, g.currentPlayer, g.grid[from]))
+	}
 
 	var myFirstCells []Coord3D
 	var nextEnemyCells []Coord3D
@@ -141,11 +143,11 @@ func (g *Game) checkCanPush(from Coord3D, direction Direction) ([]Coord3D, []Coo
 
 		if cellContent == 0 {
 			break
-		} else if cellContent == myColor && len(nextEnemyCells) == 0 {
+		} else if cellContent == g.currentPlayer && len(nextEnemyCells) == 0 {
 			myFirstCells = append(myFirstCells, cell)
-		} else if cellContent != myColor && len(myFirstCells) > 0 {
+		} else if cellContent != g.currentPlayer && len(myFirstCells) > 0 {
 			nextEnemyCells = append(nextEnemyCells, cell)
-		} else if cellContent == myColor && len(nextEnemyCells) > 0 {
+		} else if cellContent == g.currentPlayer && len(nextEnemyCells) > 0 {
 			return nil, nil, errors.New("my marbles are sandwiching enemy marbles")
 		}
 	}
