@@ -268,3 +268,13 @@ func TestCurrentPlayerAfterPush(t *testing.T) {
 
 	helpers.AssertEqual(2, gameCopy.currentPlayer)
 }
+
+func TestCannotSuicide(t *testing.T) {
+	game := NewGame()
+	game.SetGrid(Coord3D{3, -3, 0}, 1)
+	game.currentPlayer = 1
+
+	err := game.Push(Coord3D{3, -3, 0}, Right)
+
+	helpers.AssertEqual("Cannot push its own marbles out of the hexagon", err.Error())
+}

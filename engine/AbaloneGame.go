@@ -161,6 +161,12 @@ func (g *Game) checkCanPush(from Coord3D, direction Direction) ([]Coord3D, []Coo
 		}
 	}
 
+	nextCellAfterMarblesIndex := len(myFirstCells) + len(nextEnemyCells)
+
+	if nextCellAfterMarblesIndex >= len(cells) && len(nextEnemyCells) == 0 {
+		return nil, nil, errors.New("Cannot push its own marbles out of the hexagon")
+	}
+
 	if len(myFirstCells) == 0 {
 		return nil, nil, errors.New("no marble to push")
 	} else if len(myFirstCells) > 3 {
