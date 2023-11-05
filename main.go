@@ -13,7 +13,7 @@ func main() {
 	fillRandomly(currentGame)
 
 	log.Println("Random game:")
-	println(currentGame.Show())
+	log.Println(currentGame.Show())
 
 	for {
 		log.Println(fmt.Sprintf("=========== Turn %d ===========", currentGame.Turn))
@@ -21,7 +21,7 @@ func main() {
 		validMoves := currentGame.GetValidMoves()
 
 		if len(validMoves) == 0 {
-			println("No more valid moves")
+			log.Println("No more valid moves")
 			break
 		}
 
