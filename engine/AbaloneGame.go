@@ -43,6 +43,7 @@ type Game struct {
 	score         map[int]int
 	currentPlayer int
 	Turn          int
+	winner        int // 0 if no winner, 1 or 2 if there is a winner
 }
 
 func NewGame() *Game {
@@ -112,6 +113,12 @@ func (g *Game) Push(from Coord3D, direction Direction) error {
 	log.Println(fmt.Sprintf("Switching player from %d to %d", g.currentPlayer, 3-g.currentPlayer))
 	g.currentPlayer = 3 - g.currentPlayer
 	g.Turn += 1
+
+	if g.score[1] == 6 {
+		g.winner = 1
+	} else if g.score[2] == 6 {
+		g.winner = 2
+	}
 
 	return nil
 }
