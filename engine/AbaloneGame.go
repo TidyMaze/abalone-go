@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"sort"
 )
 
 /**
@@ -211,7 +212,44 @@ func (g Game) Copy() Game {
 }
 
 func (g Game) GetValidMoves() []Move {
-	return nil
+	moves := make([]Move, 0)
+
+	pushLines := make([]PushLine, 0)
+
+	for coord, _ := range g.grid {
+		for _, direction := range Directions {
+			move := PushLine{From: coord, Direction: direction}
+			_, _, err := g.checkCanPush(coord, direction)
+			if err == nil {
+				pushLines = append(pushLines, move)
+			}
+		}
+	}
+
+	// sort moves by 2D coordinate (by y then by x) then by direction (top right, right, bottom right, bottom left, left, top left)
+	// this is to make sure that the moves are always displayed in the same order
+	// this is important for the AI to be deterministic
+
+	sort.Slice(pushLines, func(i, j int) bool {
+		iCellIn2D := pushLines[i].From.To2D()
+		jCellIn2D := pushLines[j].From.To2D()
+
+		if iCellIn2D.Y == jCellIn2D.Y {
+			if iCellIn2D.X == jCellIn2D.X {
+				return pushLines[i].Direction < pushLines[j].Direction
+			} else {
+				return iCellIn2D.X < jCellIn2D.X
+			}
+		} else {
+			return iCellIn2D.Y < jCellIn2D.Y
+		}
+	})
+
+	for _, pushLine := range pushLines {
+		moves = append(moves, pushLine)
+	}
+
+	return moves
 }
 
 func copyScore(score map[int]int) map[int]int {

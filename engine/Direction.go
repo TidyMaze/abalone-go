@@ -10,3 +10,5 @@ const (
 	Left                  = iota
 	TopLeft               = iota
 )
+
+var Directions = [6]Direction{TopRight, Right, BottomRight, BottomLeft, Left, TopLeft}
