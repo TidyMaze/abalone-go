@@ -253,14 +253,18 @@ func TestCurrentPlayerAfterPush(t *testing.T) {
 	game := NewGame()
 	game.SetGrid(Coord3D{0, 0, 0}, 1)
 
+	println(game.Show())
+
 	gameCopy := game.Copy()
 
-	println(game.Show())
+	println(gameCopy.Show())
 
 	err := gameCopy.Push(Coord3D{0, 0, 0}, Right)
 	if err != nil {
 		t.Fatalf("Error: %v", err)
 	}
+
+	println(gameCopy.Show())
 
 	helpers.AssertEqual(2, gameCopy.currentPlayer)
 }
