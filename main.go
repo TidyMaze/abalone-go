@@ -1,11 +1,10 @@
 package main
 
 import (
+	"abalone-go/engine"
 	"context"
 	"flag"
 	"fmt"
-	"github.com/yaricom/goNEAT/v4/examples/pole"
-	"github.com/yaricom/goNEAT/v4/examples/xor"
 	"github.com/yaricom/goNEAT/v4/experiment"
 	"github.com/yaricom/goNEAT/v4/neat"
 	"github.com/yaricom/goNEAT/v4/neat/genetics"
@@ -79,7 +78,6 @@ func main() {
 	var outDirPath = flag.String("out", "./out", "The output directory to store results.")
 	var contextPath = flag.String("context", "./data/abalone.neat", "The execution context configuration file.")
 	var genomePath = flag.String("genome", "./data/abalonestartgenes", "The seed genome to start with.")
-	var experimentName = flag.String("experiment", "abalone", "The name of experiment to run.")
 	var trialsCount = flag.Int("trials", 0, "The number of trials for experiment. Overrides the one set in configuration.")
 	var logLevel = flag.String("log_level", "", "The logger level to be used. Overrides the one set in configuration.")
 	var randSeed = flag.Int64("seed", 0, "The seed for random number generator")
@@ -101,7 +99,7 @@ func main() {
 	}
 
 	// Load Genome
-	log.Printf("Loading start genome for %s experiment from file '%s'\n", *experimentName, *genomePath)
+	log.Printf("Loading start genome for %s experiment from file '%s'\n", "abalone", *genomePath)
 	reader, err := genetics.NewGenomeReaderFromFile(*genomePath)
 	if err != nil {
 		log.Fatalf("Failed to open genome file, reason: '%s'", err)
@@ -144,21 +142,8 @@ func main() {
 		RandSeed: seed,
 	}
 	var generationEvaluator experiment.GenerationEvaluator
-	switch *experimentName {
-	case "XOR":
-		expt.MaxFitnessScore = 16.0 // as given by fitness function definition
-		generationEvaluator = xor.NewXORGenerationEvaluator(outDir)
-	case "cart_pole":
-		expt.MaxFitnessScore = 1.0 // as given by fitness function definition
-		generationEvaluator = pole.NewCartPoleGenerationEvaluator(outDir, true, 500000)
-	case "cart_2pole_markov":
-		expt.MaxFitnessScore = 1.0 // as given by fitness function definition
-		generationEvaluator = pole.NewCartDoublePoleGenerationEvaluator(outDir, true, pole.ContinuousAction)
-	case "cart_2pole_non-markov":
-		generationEvaluator = pole.NewCartDoublePoleGenerationEvaluator(outDir, false, pole.ContinuousAction)
-	default:
-		log.Fatalf("Unsupported experiment: %s", *experimentName)
-	}
+	expt.MaxFitnessScore = 100.0 // as given by fitness function definition
+	generationEvaluator = engine.NewAbaloneGenerationEvaluator(outDir)
 
 	// prepare to execute
 	errChan := make(chan error)
@@ -206,7 +191,7 @@ func main() {
 
 	// Save experiment data in native format
 	//
-	expResPath := fmt.Sprintf("%s/%s.dat", outDir, *experimentName)
+	expResPath := fmt.Sprintf("%s/%s.dat", outDir, "abalone")
 	if expResFile, err := os.Create(expResPath); err != nil {
 		log.Fatal("Failed to create file for experiment results", err)
 	} else if err = expt.Write(expResFile); err != nil {
@@ -215,7 +200,7 @@ func main() {
 
 	// Save experiment data in Numpy NPZ format if requested
 	//
-	npzResPath := fmt.Sprintf("%s/%s.npz", outDir, *experimentName)
+	npzResPath := fmt.Sprintf("%s/%s.npz", outDir, "abalone")
 	if npzResFile, err := os.Create(npzResPath); err != nil {
 		log.Fatalf("Failed to create file for experiment results: [%s], reason: %s", npzResPath, err)
 	} else if err = expt.WriteNPZ(npzResFile); err != nil {
