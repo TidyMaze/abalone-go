@@ -122,7 +122,7 @@ func main() {
 	}
 
 	startGenome := genetics.NewGenome(1, traits, nodes, genes)
-	fmt.Println(startGenome)
+	//fmt.Println(startGenome)
 
 	// Check if output dir exists
 	outDir := *outDirPath
