@@ -212,14 +212,14 @@ func (e *AbaloneGenerationEvaluator) predictSingleMove(phenotype *network.Networ
 	// Direction is the index of max output in the last 6 nodes
 	cell := -1
 	for i := 0; i < 61; i++ {
-		if phenotype.Outputs[i].Activation > phenotype.Outputs[cell].Activation {
+		if cell == -1 || (phenotype.Outputs[i].Activation > phenotype.Outputs[cell].Activation) {
 			cell = i
 		}
 	}
 
 	direction := -1
 	for i := 61; i < 67; i++ {
-		if phenotype.Outputs[i].Activation > phenotype.Outputs[direction].Activation {
+		if direction == -1 || (phenotype.Outputs[i].Activation > phenotype.Outputs[direction].Activation) {
 			direction = i
 		}
 	}
