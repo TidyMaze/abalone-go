@@ -1,6 +1,7 @@
 package engine
 
 import (
+	"abalone-go/helpers"
 	"context"
 	"fmt"
 	"github.com/yaricom/goNEAT/v4/experiment"
@@ -8,8 +9,11 @@ import (
 	"github.com/yaricom/goNEAT/v4/neat"
 	"github.com/yaricom/goNEAT/v4/neat/genetics"
 	"github.com/yaricom/goNEAT/v4/neat/network"
+	"log"
 	"math"
 )
+
+const CountGames = 100
 
 type AbaloneGenerationEvaluator struct {
 	OutputPath string
@@ -117,38 +121,57 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism) (b
 		return false, nil
 	}
 
-	game := NewGame()
+	winCount := 0
+	gamesCount := 0
 
-	for !game.IsOver() {
-		if game.currentPlayer == 1 {
-			// player 1 is the organism
+	for gameId := 0; gameId < CountGames; gameId++ {
+		game := NewGame()
 
-			_, b, err2 := e.predictSingleMove(phenotype, netDepth, *game)
-			if err2 != nil {
-				return b, err2
+		for !game.IsOver() {
+			var move Move
+			if game.currentPlayer == 1 {
+				// player 1 is the organism
+
+				move, err = e.predictSingleMove(phenotype, netDepth, *game)
+
+				if err != nil {
+					return false, err
+				}
+			} else {
+				// player 2 is the random opponent
+
+				// pick a random move
+				possibleMoves := game.GetValidMoves()
+				move = helpers.RandIn(possibleMoves)
 			}
-		} else {
-			// player 2 is the random opponent
 
+			err := game.Move(move)
+			if err != nil {
+				return false, err
+			}
 		}
+
+		log.Println(fmt.Sprintf("Finished game #%d/%d, winner: %d", gameId+1, CountGames, game.Winner))
+
+		if game.Winner == 1 {
+			winCount++
+		}
+
+		gamesCount++
 	}
 
-	if success {
-		score := winrate // win rate, measured by playing 100 games against random opponent
-		ideal := 1.0     // 100% win rate
-		organism.Fitness = math.Pow(score, 2.0)
-		organism.Error = math.Pow(ideal-score, 2.0)
-	} else {
-		// The network is flawed (shouldn't happen) - flag as anomaly
-		organism.Error = 1.0
-		organism.Fitness = 0.0
-	}
+	winRate := float64(winCount) / float64(gamesCount)
+
+	score := winRate // win rate, measured by playing 100 games against random opponent
+	ideal := 1.0     // 100% win rate
+	organism.Fitness = math.Pow(score, 2.0)
+	organism.Error = math.Pow(ideal-score, 2.0)
 
 	organism.IsWinner = false
 	return organism.IsWinner, nil
 }
 
-func (e *AbaloneGenerationEvaluator) predictSingleMove(phenotype *network.Network, netDepth int, game Game) (*Coord3D, *Direction, error) {
+func (e *AbaloneGenerationEvaluator) predictSingleMove(phenotype *network.Network, netDepth int, game Game) (Move, error) {
 	err := error(nil)
 
 	var in []float64
@@ -175,13 +198,13 @@ func (e *AbaloneGenerationEvaluator) predictSingleMove(phenotype *network.Networ
 
 	if err = phenotype.LoadSensors(in); err != nil {
 		neat.ErrorLog(fmt.Sprintf("Failed to load sensors: %s", err))
-		return nil, nil, err
+		return nil, err
 	}
 
 	// Use depth to ensure full relaxation
-	if success, err = phenotype.ForwardSteps(netDepth); err != nil {
+	if success, err := phenotype.ForwardSteps(netDepth); err != nil || !success {
 		neat.ErrorLog(fmt.Sprintf("Failed to activate network: %s", err))
-		return nil, nil, err
+		return nil, err
 	}
 
 	// Read output
@@ -204,8 +227,8 @@ func (e *AbaloneGenerationEvaluator) predictSingleMove(phenotype *network.Networ
 	// Flush network for subsequent use
 	if _, err = phenotype.Flush(); err != nil {
 		neat.ErrorLog(fmt.Sprintf("Failed to flush network: %s", err))
-		return nil, nil, err
+		return nil, err
 	}
 
-	return &Coord3D{cell % 9, cell / 9, 0}, Direction(direction - 61), nil
+	return PushLine{Coord3D{cell % 9, cell / 9, 0}, Direction(direction - 61)}, nil
 }

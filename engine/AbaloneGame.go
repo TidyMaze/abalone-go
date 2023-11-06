@@ -282,6 +282,15 @@ func (g *Game) GetValidMoves() []Move {
 	return moves
 }
 
+func (g *Game) Move(move Move) error {
+	switch move.(type) {
+	case PushLine:
+		return g.Push(move.(PushLine).From, move.(PushLine).Direction)
+	default:
+		return errors.New(fmt.Sprintf("Unknown move type: %v", move))
+	}
+}
+
 func copyScore(score map[int]int) map[int]int {
 	newScore := make(map[int]int)
 

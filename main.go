@@ -2,6 +2,7 @@ package main
 
 import (
 	. "abalone-go/engine"
+	"abalone-go/helpers"
 	"fmt"
 	"log"
 	"math/rand"
@@ -27,7 +28,7 @@ func main() {
 
 		log.Println(fmt.Sprintf("Valid moves size: %d", len(validMoves)))
 
-		firstValidMove := randIn(validMoves)
+		firstValidMove := helpers.RandIn(validMoves)
 
 		switch t := firstValidMove.(type) {
 		case PushLine:
@@ -52,10 +53,6 @@ func main() {
 	} else {
 		log.Println(fmt.Sprintf("Winner: %d", currentGame.Winner))
 	}
-}
-
-func randIn[T any](slice []T) T {
-	return slice[rand.Intn(len(slice))]
 }
 
 func fillRandomly(game *Game) {
