@@ -77,9 +77,9 @@ import (
 //	}
 func main() {
 	var outDirPath = flag.String("out", "./out", "The output directory to store results.")
-	var contextPath = flag.String("context", "./data/xor.neat", "The execution context configuration file.")
-	var genomePath = flag.String("genome", "./data/xorstartgenes", "The seed genome to start with.")
-	var experimentName = flag.String("experiment", "XOR", "The name of experiment to run. [XOR, cart_pole, cart_2pole_markov, cart_2pole_non-markov]")
+	var contextPath = flag.String("context", "./data/abalone.neat", "The execution context configuration file.")
+	var genomePath = flag.String("genome", "./data/abalonestartgenes", "The seed genome to start with.")
+	var experimentName = flag.String("experiment", "abalone", "The name of experiment to run.")
 	var trialsCount = flag.Int("trials", 0, "The number of trials for experiment. Overrides the one set in configuration.")
 	var logLevel = flag.String("log_level", "", "The logger level to be used. Overrides the one set in configuration.")
 	var randSeed = flag.Int64("seed", 0, "The seed for random number generator")
