@@ -8,6 +8,7 @@ import (
 	"github.com/yaricom/goNEAT/v4/experiment"
 	"github.com/yaricom/goNEAT/v4/neat"
 	"github.com/yaricom/goNEAT/v4/neat/genetics"
+	"github.com/yaricom/goNEAT/v4/neat/network"
 	"log"
 	"math/rand"
 	"os"
@@ -98,17 +99,29 @@ func main() {
 	}
 
 	// Load Genome
-	genomePath := "./data/abalonestartgenes.yml"
+	traits := make([]*neat.Trait, 0)
+	traits = append(traits, neat.NewTrait())
 
-	log.Printf("Loading start genome for %s experiment from file '%s'\n", "abalone", genomePath)
-	reader, err := genetics.NewGenomeReaderFromFile(genomePath)
-	if err != nil {
-		log.Fatalf("Failed to open genome file, reason: '%s'", err)
+	nodes := make([]*network.NNode, 0)
+	// Add the 61*2 input nodes
+	for i := 0; i < 61*2; i++ {
+		nodes = append(nodes, network.NewNNode(i+1, network.InputNeuron))
 	}
-	startGenome, err := reader.Read()
-	if err != nil {
-		log.Fatalf("Failed to read start genome, reason: '%s'", err)
+
+	// Add the 61 + 6 output nodes
+	for i := 0; i < 61+6; i++ {
+		nodes = append(nodes, network.NewNNode(i+1+61*2, network.OutputNeuron))
 	}
+
+	genes := make([]*genetics.Gene, 0)
+	// Link each input to each output
+	for i := 0; i < 61*2; i++ {
+		for j := 0; j < 61+6; j++ {
+			genes = append(genes, genetics.NewGene(0.0, nodes[i], nodes[j+61*2], true, 1.0, 0))
+		}
+	}
+
+	startGenome := genetics.NewGenome(1, traits, nodes, genes)
 	fmt.Println(startGenome)
 
 	// Check if output dir exists
@@ -187,7 +200,6 @@ func main() {
 	//
 	expt.PrintStatistics()
 
-	fmt.Printf(">>> Start genome file:  %s\n", genomePath)
 	fmt.Printf(">>> Configuration file: %s\n", *contextPath)
 
 	// Save experiment data in native format
