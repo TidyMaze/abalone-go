@@ -77,7 +77,6 @@ import (
 func main() {
 	var outDirPath = flag.String("out", "./out", "The output directory to store results.")
 	var contextPath = flag.String("context", "./data/abalone.neat", "The execution context configuration file.")
-	var genomePath = flag.String("genome", "./data/abalonestartgenes", "The seed genome to start with.")
 	var trialsCount = flag.Int("trials", 0, "The number of trials for experiment. Overrides the one set in configuration.")
 	var logLevel = flag.String("log_level", "", "The logger level to be used. Overrides the one set in configuration.")
 	var randSeed = flag.Int64("seed", 0, "The seed for random number generator")
@@ -99,8 +98,10 @@ func main() {
 	}
 
 	// Load Genome
-	log.Printf("Loading start genome for %s experiment from file '%s'\n", "abalone", *genomePath)
-	reader, err := genetics.NewGenomeReaderFromFile(*genomePath)
+	genomePath := "./data/abalonestartgenes.yml"
+
+	log.Printf("Loading start genome for %s experiment from file '%s'\n", "abalone", genomePath)
+	reader, err := genetics.NewGenomeReaderFromFile(genomePath)
 	if err != nil {
 		log.Fatalf("Failed to open genome file, reason: '%s'", err)
 	}
@@ -186,7 +187,7 @@ func main() {
 	//
 	expt.PrintStatistics()
 
-	fmt.Printf(">>> Start genome file:  %s\n", *genomePath)
+	fmt.Printf(">>> Start genome file:  %s\n", genomePath)
 	fmt.Printf(">>> Configuration file: %s\n", *contextPath)
 
 	// Save experiment data in native format
