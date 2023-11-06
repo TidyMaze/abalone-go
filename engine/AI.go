@@ -7,6 +7,7 @@ import (
 	"github.com/yaricom/goNEAT/v4/experiment/utils"
 	"github.com/yaricom/goNEAT/v4/neat"
 	"github.com/yaricom/goNEAT/v4/neat/genetics"
+	"github.com/yaricom/goNEAT/v4/neat/network"
 	"math"
 )
 
@@ -93,13 +94,11 @@ func NewAbaloneGenerationEvaluator(outputPath string) experiment.GenerationEvalu
 
 // orgEvaluate evaluates fitness of the provided organism
 func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism) (bool, error) {
-	// The four possible input combinations to xor
-	// The first number is for biasing
-	in := [][]float64{
-		{1.0, 0.0, 0.0},
-		{1.0, 0.0, 1.0},
-		{1.0, 1.0, 0.0},
-		{1.0, 1.0, 1.0}}
+	// evaluate the organism by running 100 games against random opponent
+	// fitness is the win rate of the organism
+
+	// INPUT: 61 cells, 2 possible states (1,2) = 122 input nodes
+	// OUTPUT: 61 nodes for the push origin, 6 nodes for the push direction = 67 output nodes
 
 	phenotype, err := organism.Phenotype()
 	if err != nil {
@@ -118,36 +117,27 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism) (b
 		return false, nil
 	}
 
-	success := false          // Check for successful activation
-	out := make([]float64, 4) // The four outputs
+	game := NewGame()
 
-	// Load and activate the network on each input
-	for count := 0; count < 4; count++ {
-		if err = phenotype.LoadSensors(in[count]); err != nil {
-			neat.ErrorLog(fmt.Sprintf("Failed to load sensors: %s", err))
-			return false, err
-		}
+	for !game.IsOver() {
+		if game.currentPlayer == 1 {
+			// player 1 is the organism
 
-		// Use depth to ensure full relaxation
-		if success, err = phenotype.ForwardSteps(netDepth); err != nil {
-			neat.ErrorLog(fmt.Sprintf("Failed to activate network: %s", err))
-			return false, err
-		}
-		out[count] = phenotype.Outputs[0].Activation
+			_, b, err2 := e.predictSingleMove(phenotype, netDepth, *game)
+			if err2 != nil {
+				return b, err2
+			}
+		} else {
+			// player 2 is the random opponent
 
-		// Flush network for subsequent use
-		if _, err = phenotype.Flush(); err != nil {
-			neat.ErrorLog(fmt.Sprintf("Failed to flush network: %s", err))
-			return false, err
 		}
 	}
 
 	if success {
-		// Mean Squared Error
-		errorSum := math.Abs(out[0]) + math.Abs(1.0-out[1]) + math.Abs(1.0-out[2]) + math.Abs(out[3]) // ideal == 0
-		target := 4.0 - errorSum                                                                      // ideal == 4.0
-		organism.Fitness = math.Pow(4.0-errorSum, 2.0)
-		organism.Error = math.Pow(4.0-target, 2.0)
+		score := winrate // win rate, measured by playing 100 games against random opponent
+		ideal := 1.0     // 100% win rate
+		organism.Fitness = math.Pow(score, 2.0)
+		organism.Error = math.Pow(ideal-score, 2.0)
 	} else {
 		// The network is flawed (shouldn't happen) - flag as anomaly
 		organism.Error = 1.0
@@ -156,4 +146,66 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism) (b
 
 	organism.IsWinner = false
 	return organism.IsWinner, nil
+}
+
+func (e *AbaloneGenerationEvaluator) predictSingleMove(phenotype *network.Network, netDepth int, game Game) (*Coord3D, *Direction, error) {
+	err := error(nil)
+
+	var in []float64
+
+	// Set the input values
+	for y := -4; y <= 4; y++ {
+		for x := -4; x <= 4; x++ {
+			coord := Coord2D{x, y}.To3D()
+			if IsValidCoord(coord) {
+				cellOwner := game.GetGrid(coord)
+				player1 := 0.0
+				player2 := 0.0
+
+				if cellOwner == 1 {
+					player1 = 1.0
+				} else if cellOwner == 2 {
+					player2 = 1.0
+				}
+
+				in = append(in, player1, player2)
+			}
+		}
+	}
+
+	if err = phenotype.LoadSensors(in); err != nil {
+		neat.ErrorLog(fmt.Sprintf("Failed to load sensors: %s", err))
+		return nil, nil, err
+	}
+
+	// Use depth to ensure full relaxation
+	if success, err = phenotype.ForwardSteps(netDepth); err != nil {
+		neat.ErrorLog(fmt.Sprintf("Failed to activate network: %s", err))
+		return nil, nil, err
+	}
+
+	// Read output
+	// Cell is the index of max output in the first 61 nodes
+	// Direction is the index of max output in the last 6 nodes
+	cell := -1
+	for i := 0; i < 61; i++ {
+		if phenotype.Outputs[i].Activation > phenotype.Outputs[cell].Activation {
+			cell = i
+		}
+	}
+
+	direction := -1
+	for i := 61; i < 67; i++ {
+		if phenotype.Outputs[i].Activation > phenotype.Outputs[direction].Activation {
+			direction = i
+		}
+	}
+
+	// Flush network for subsequent use
+	if _, err = phenotype.Flush(); err != nil {
+		neat.ErrorLog(fmt.Sprintf("Failed to flush network: %s", err))
+		return nil, nil, err
+	}
+
+	return &Coord3D{cell % 9, cell / 9, 0}, Direction(direction - 61), nil
 }
