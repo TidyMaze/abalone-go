@@ -93,3 +93,11 @@ func buildEmptyGrid() map[Coord3D]int {
 
 	return grid
 }
+
+func buildStartingGrid() map[Coord3D]int {
+	grid := buildEmptyGrid()
+
+	// TODO
+
+	return grid
+}

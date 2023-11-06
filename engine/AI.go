@@ -126,6 +126,9 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism) (b
 
 	for gameId := 0; gameId < CountGames; gameId++ {
 		game := NewGame()
+		game.grid = buildStartingGrid()
+
+		println(showGrid(game.grid))
 
 		for !game.IsOver() {
 			var move Move
@@ -133,6 +136,8 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism) (b
 				// player 1 is the organism
 
 				move, err = e.predictSingleMove(phenotype, netDepth, *game)
+
+				log.Println(fmt.Sprintf("Predicted move: %v", move))
 
 				if err != nil {
 					return false, err
