@@ -97,7 +97,45 @@ func buildEmptyGrid() map[Coord3D]int {
 func buildStartingGrid() map[Coord3D]int {
 	grid := buildEmptyGrid()
 
-	// TODO
+	// first line
+	grid[Coord3D{0, 4, -4}] = 1
+	grid[Coord3D{1, 3, -4}] = 1
+	grid[Coord3D{2, 2, -4}] = 1
+	grid[Coord3D{3, 1, -4}] = 1
+	grid[Coord3D{4, 0, -4}] = 1
+
+	// second line
+	grid[Coord3D{-1, 4, -3}] = 1
+	grid[Coord3D{0, 3, -3}] = 1
+	grid[Coord3D{1, 2, -3}] = 1
+	grid[Coord3D{2, 1, -3}] = 1
+	grid[Coord3D{3, 0, -3}] = 1
+	grid[Coord3D{4, -1, -3}] = 1
+
+	// third line
+	grid[Coord3D{0, 2, -2}] = 1
+	grid[Coord3D{1, 1, -2}] = 1
+	grid[Coord3D{2, 0, -2}] = 1
+
+	// seventh line
+	grid[Coord3D{-2, 0, 2}] = 2
+	grid[Coord3D{-1, -1, 2}] = 2
+	grid[Coord3D{0, -2, 2}] = 2
+
+	// eighth line
+	grid[Coord3D{-4, 1, 3}] = 2
+	grid[Coord3D{-3, 0, 3}] = 2
+	grid[Coord3D{-2, -1, 3}] = 2
+	grid[Coord3D{-1, -2, 3}] = 2
+	grid[Coord3D{0, -3, 3}] = 2
+	grid[Coord3D{1, -4, 3}] = 2
+
+	// ninth line
+	grid[Coord3D{-4, 0, 4}] = 2
+	grid[Coord3D{-3, -1, 4}] = 2
+	grid[Coord3D{-2, -2, 4}] = 2
+	grid[Coord3D{-1, -3, 4}] = 2
+	grid[Coord3D{0, -4, 4}] = 2
 
 	return grid
 }
