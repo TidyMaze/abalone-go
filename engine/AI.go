@@ -235,5 +235,9 @@ func (e *AbaloneGenerationEvaluator) predictSingleMove(phenotype *network.Networ
 		return nil, err
 	}
 
-	return PushLine{Coord3D{cell % 9, cell / 9, 0}, Direction(direction - 61)}, nil
+	fromCoord := Coord3D{cell % 9, cell / 9, 0}
+
+	helpers.AssertEqual(IsValidCoord(fromCoord), true)
+
+	return PushLine{fromCoord, Direction(direction - 61)}, nil
 }
