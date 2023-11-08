@@ -168,7 +168,7 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 			}
 		}
 
-		log.Println(fmt.Sprintf("[Gen %d][Org %d] Finished game #%d/%d, winner: %d", organism.Genotype.Id, epoch.Id, gameId+1, CountGames, game.Winner))
+		log.Println(fmt.Sprintf("[Gen %d][Org %d] Finished game #%d/%d, winner: %d", epoch.Id, organism.Genotype.Id, gameId+1, CountGames, game.Winner))
 
 		if game.Winner == 1 {
 			winCount++
