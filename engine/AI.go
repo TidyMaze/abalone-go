@@ -190,7 +190,7 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 	log.Println(fmt.Sprintf("[Gen %d][Org %d] Finished ranking organism, score diff: %f, valid moves: %d, score: %f, ideal: %f",
 		epoch.Id, organism.Genotype.Id, scoreDiff, validMovesCount, score, ideal))
 
-	organism.Fitness = scoreDiff
+	organism.Fitness = score
 	organism.Error = math.Abs(ideal - score)
 
 	organism.IsWinner = false
