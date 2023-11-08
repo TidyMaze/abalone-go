@@ -145,6 +145,7 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 					if pushError != nil {
 						// invalid move, opponent wins
 						game.Winner = 2
+						game.score[2] = 6
 					} else {
 						//log.Println(fmt.Sprintf("Predicted move: %v", move))
 
