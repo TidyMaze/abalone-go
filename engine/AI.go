@@ -168,14 +168,14 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 			}
 		}
 
-		log.Println(fmt.Sprintf("[Gen %d][Org %d] Finished game #%d/%d, winner: %d", epoch.Id, organism.Genotype.Id, gameId+1, CountGames, game.Winner))
-
 		totalCaptured += game.score[1]
 		totalEnemyCaptured += game.score[2]
 	}
 
 	scoreDiff := float64(totalCaptured) - float64(totalEnemyCaptured)
 	ideal := float64(6 * CountGames) // win every game at 6-0 for player 1
+
+	log.Println(fmt.Sprintf("[Gen %d][Org %d] Finished ranking organism, score diff: %f", epoch.Id, organism.Genotype.Id, scoreDiff))
 
 	organism.Fitness = math.Pow(scoreDiff, 2.0)
 	organism.Error = math.Pow(ideal-scoreDiff, 2.0)
