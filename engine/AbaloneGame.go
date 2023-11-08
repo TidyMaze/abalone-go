@@ -87,7 +87,7 @@ func (g *Game) Push(from Coord3D, direction Direction) error {
 		return err
 	}
 
-	log.Println(fmt.Sprintf("Pushing my marbles: %v and enemy marbles: %v", myFirstCells, nextEnemyCells))
+	//log.Println(fmt.Sprintf("Pushing my marbles: %v and enemy marbles: %v", myFirstCells, nextEnemyCells))
 
 	allCellsToPush := concatSlices(myFirstCells, nextEnemyCells)
 
@@ -114,7 +114,7 @@ func (g *Game) Push(from Coord3D, direction Direction) error {
 		g.score[g.currentPlayer] += 1
 	}
 
-	log.Println(fmt.Sprintf("Switching player from %d to %d", g.currentPlayer, 3-g.currentPlayer))
+	//log.Println(fmt.Sprintf("Switching player from %d to %d", g.currentPlayer, 3-g.currentPlayer))
 	g.currentPlayer = 3 - g.currentPlayer
 	g.Turn += 1
 

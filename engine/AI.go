@@ -146,7 +146,7 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 						// invalid move, opponent wins
 						game.Winner = 2
 					} else {
-						log.Println(fmt.Sprintf("Predicted move: %v", move))
+						//log.Println(fmt.Sprintf("Predicted move: %v", move))
 
 						err := game.Move(move)
 						if err != nil {
