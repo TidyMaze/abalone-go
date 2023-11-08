@@ -24,7 +24,9 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 	if !ok {
 		return neat.ErrNEATOptionsNotFound
 	}
-	// Evaluate each organism on a test
+
+	totalFitness := 0.0
+
 	for _, org := range pop.Organisms {
 		res, err := e.orgEvaluate(org, epoch)
 		if err != nil {
@@ -46,7 +48,11 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 				}
 			}
 		}
+
+		totalFitness = totalFitness + org.Fitness
 	}
+
+	log.Println(fmt.Sprintf("[Gen %d] Average fitness: %f", epoch.Id, totalFitness/float64(len(pop.Organisms))))
 
 	// Fill statistics about current epoch
 	epoch.FillPopulationStatistics(pop)
