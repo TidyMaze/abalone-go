@@ -121,8 +121,8 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 		return false, nil
 	}
 
-	winCount := 0
-	gamesCount := 0
+	totalCaptured := 0
+	totalEnemyCaptured := 0
 
 	for gameId := 0; gameId < CountGames; gameId++ {
 		game := NewGame()
@@ -170,19 +170,15 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 
 		log.Println(fmt.Sprintf("[Gen %d][Org %d] Finished game #%d/%d, winner: %d", epoch.Id, organism.Genotype.Id, gameId+1, CountGames, game.Winner))
 
-		if game.Winner == 1 {
-			winCount++
-		}
-
-		gamesCount++
+		totalCaptured += game.score[1]
+		totalEnemyCaptured += game.score[2]
 	}
 
-	winRate := float64(winCount) / float64(gamesCount)
+	scoreDiff := float64(totalCaptured) - float64(totalEnemyCaptured)
+	ideal := float64(6 * CountGames) // win every game at 6-0 for player 1
 
-	score := winRate // win rate, measured by playing 100 games against random opponent
-	ideal := 1.0     // 100% win rate
-	organism.Fitness = math.Pow(score, 2.0)
-	organism.Error = math.Pow(ideal-score, 2.0)
+	organism.Fitness = math.Pow(scoreDiff, 2.0)
+	organism.Error = math.Pow(ideal-scoreDiff, 2.0)
 
 	organism.IsWinner = false
 	return organism.IsWinner, nil
