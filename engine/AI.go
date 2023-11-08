@@ -26,7 +26,7 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 	}
 	// Evaluate each organism on a test
 	for _, org := range pop.Organisms {
-		res, err := e.orgEvaluate(org)
+		res, err := e.orgEvaluate(org, epoch)
 		if err != nil {
 			return err
 		}
@@ -97,7 +97,7 @@ func NewAbaloneGenerationEvaluator(outputPath string) experiment.GenerationEvalu
 }
 
 // orgEvaluate evaluates fitness of the provided organism
-func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism) (bool, error) {
+func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, epoch *experiment.Generation) (bool, error) {
 	// evaluate the organism by running 100 games against random opponent
 	// fitness is the win rate of the organism
 
@@ -128,19 +128,31 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism) (b
 		game := NewGame()
 		game.grid = buildStartingGrid()
 
-		println(showGrid(game.grid))
-
 		for !game.IsOver() {
 			var move Move
 			if game.currentPlayer == 1 {
 				// player 1 is the organism
 
 				move, err = e.predictSingleMove(phenotype, netDepth, *game)
-
-				log.Println(fmt.Sprintf("Predicted move: %v", move))
-
 				if err != nil {
 					return false, err
+				}
+
+				switch move.(type) {
+				case PushLine:
+					_, _, pushError := game.checkCanPush(move.(PushLine).From, move.(PushLine).Direction)
+
+					if pushError != nil {
+						// invalid move, opponent wins
+						game.Winner = 2
+					} else {
+						log.Println(fmt.Sprintf("Predicted move: %v", move))
+
+						err := game.Move(move)
+						if err != nil {
+							return false, err
+						}
+					}
 				}
 			} else {
 				// player 2 is the random opponent
@@ -148,15 +160,15 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism) (b
 				// pick a random move
 				possibleMoves := game.GetValidMoves()
 				move = helpers.RandIn(possibleMoves)
-			}
 
-			err := game.Move(move)
-			if err != nil {
-				return false, err
+				err := game.Move(move)
+				if err != nil {
+					return false, err
+				}
 			}
 		}
 
-		log.Println(fmt.Sprintf("Finished game #%d/%d, winner: %d", gameId+1, CountGames, game.Winner))
+		log.Println(fmt.Sprintf("[Gen %d][Org %d] Finished game #%d/%d, winner: %d", organism.Genotype.Id, epoch.Id, gameId+1, CountGames, game.Winner))
 
 		if game.Winner == 1 {
 			winCount++
@@ -308,8 +320,6 @@ func (e *AbaloneGenerationEvaluator) predictSingleMove(phenotype *network.Networ
 	}
 
 	fromCoord := indexToCoord3D[cell]
-
-	helpers.AssertEqual(IsValidCoord(fromCoord), true)
 
 	return PushLine{fromCoord, Direction(direction - 61)}, nil
 }
