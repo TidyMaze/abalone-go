@@ -2,6 +2,7 @@ package main
 
 import (
 	"abalone-go/engine"
+	"abalone-go/helpers"
 	"context"
 	"flag"
 	"fmt"
@@ -117,7 +118,7 @@ func main() {
 	// Link each input to each output
 	for i := 0; i < 61*2; i++ {
 		for j := 0; j < 61+6; j++ {
-			genes = append(genes, genetics.NewGene(0.0, nodes[i], nodes[j+61*2], true, 1.0, 0))
+			genes = append(genes, genetics.NewGene(helpers.RandWeight(), nodes[i], nodes[j+61*2], true, 1.0, 0))
 		}
 	}
 
