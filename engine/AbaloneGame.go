@@ -3,7 +3,6 @@ package engine
 import (
 	"errors"
 	"fmt"
-	"log"
 	"sort"
 )
 
@@ -196,7 +195,7 @@ func (g *Game) pushSingle(from Coord3D, direction Direction) (bool, error) {
 
 		g.grid[destination] = cellContent
 	} else {
-		log.Println(fmt.Sprintf("Player %d has captured a marble in %v", g.currentPlayer, destination))
+		//log.Println(fmt.Sprintf("Player %d has captured a marble in %v", g.currentPlayer, destination))
 		capturedMarble = true
 	}
 
