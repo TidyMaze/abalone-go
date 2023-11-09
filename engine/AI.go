@@ -136,7 +136,7 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 		game := NewGame()
 		game.grid = buildStartingGrid()
 
-		for !game.IsOver() {
+		for !game.IsOver() && game.Turn < 30 {
 			var move Move
 			if game.currentPlayer == 1 {
 				// player 1 is the organism
