@@ -26,7 +26,7 @@ newlink_tries  50
 print_every  10
 babies_stolen  0
 num_runs  100
-num_generations 100
+num_generations 1000
 log_level info
 epoch_executor sequential
 genome_compat_method linear
