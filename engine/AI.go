@@ -130,7 +130,7 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 
 	totalCaptured := 0
 	totalEnemyCaptured := 0
-	invalidMovesCount := 0
+	validMovesCount := 0
 
 	for gameId := 0; gameId < CountGames; gameId++ {
 		game := NewGame()
@@ -154,7 +154,6 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 						// invalid move, opponent wins
 						game.Winner = 2
 						game.score[2] = 6
-						invalidMovesCount = invalidMovesCount + 1
 					} else {
 						//log.Println(fmt.Sprintf("Predicted move: %v", move))
 
@@ -162,6 +161,8 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 						if err != nil {
 							return false, err
 						}
+
+						validMovesCount = validMovesCount + 1
 					}
 				}
 			} else {
@@ -183,7 +184,7 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 	}
 
 	scoreDiff := float64(totalCaptured) - float64(totalEnemyCaptured)
-	score := scoreDiff*100 - float64(invalidMovesCount)
+	score := scoreDiff*100 + float64(validMovesCount)
 	ideal := float64(6 * CountGames * 100) // win every game at 6-0 for player 1
 
 	//log.Println(fmt.Sprintf("[Gen %d][Org %d] Finished ranking organism, score diff: %f, invalid moves: %d, score: %f, ideal: %f",
