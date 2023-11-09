@@ -6,9 +6,9 @@ import (
 )
 
 type Coord3D struct {
-	X int
-	Y int
-	Z int
+	X int8
+	Y int8
+	Z int8
 }
 
 func (c Coord3D) String() string {
@@ -16,8 +16,8 @@ func (c Coord3D) String() string {
 }
 
 type Coord2D struct {
-	X int
-	Y int
+	X int8
+	Y int8
 }
 
 func (c Coord2D) To3D() Coord3D {

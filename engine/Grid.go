@@ -13,11 +13,11 @@ func showGrid(grid map[Coord3D]int) string {
 
 	// for each horizontal line, print the line
 	// x and y are in 2D coordinates
-	for y := -4; y <= 4; y++ {
+	for y := int8(-4); y <= 4; y++ {
 		line := ""
 
 		// print the line
-		for x := -4; x <= 4; x++ {
+		for x := int8(-4); x <= 4; x++ {
 			coord := Coord2D{x, y}.To3D()
 
 			if v, ok := grid[coord]; ok {

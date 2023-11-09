@@ -203,8 +203,8 @@ func (e *AbaloneGenerationEvaluator) predictSingleMove(phenotype *network.Networ
 	var in []float64
 
 	// Set the input values
-	for y := -4; y <= 4; y++ {
-		for x := -4; x <= 4; x++ {
+	for y := int8(-4); y <= 4; y++ {
+		for x := int8(-4); x <= 4; x++ {
 			coord := Coord2D{x, y}.To3D()
 			if IsValidCoord(coord) {
 				cellOwner := game.GetGrid(coord)
