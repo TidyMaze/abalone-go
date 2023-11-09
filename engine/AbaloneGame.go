@@ -45,6 +45,8 @@ type Game struct {
 	Winner        int // 0 if no Winner, 1 or 2 if there is a Winner
 }
 
+var emptyGrid = buildEmptyGrid()
+
 func NewGame() *Game {
 	game := &Game{
 		score:         make(map[int]int),
@@ -54,7 +56,7 @@ func NewGame() *Game {
 	game.score[1] = 0
 	game.score[2] = 0
 
-	game.grid = buildEmptyGrid()
+	game.grid = copyGrid(emptyGrid)
 	return game
 }
 
