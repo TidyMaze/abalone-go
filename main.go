@@ -12,11 +12,14 @@ import (
 	"github.com/yaricom/goNEAT/v4/neat/network"
 	"log"
 	"math/rand"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 )
+
+import _ "net/http/pprof"
 
 //	func main() {
 //		// Create a new game
@@ -77,6 +80,10 @@ import (
 //		}
 //	}
 func main() {
+	go func() {
+		log.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
+
 	var outDirPath = flag.String("out", "./out", "The output directory to store results.")
 	var contextPath = flag.String("context", "./data/abalone.neat", "The execution context configuration file.")
 	var trialsCount = flag.Int("trials", 0, "The number of trials for experiment. Overrides the one set in configuration.")
