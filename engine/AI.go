@@ -34,20 +34,21 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 		}
 
 		if epoch.Champion == nil || org.Fitness > epoch.Champion.Fitness {
-			log.Println(fmt.Sprintf("[Gen %d] Found new champion with fitness: %f", epoch.Id, org.Fitness))
 			epoch.WinnerNodes = len(org.Genotype.Nodes)
 			epoch.WinnerGenes = org.Genotype.Extrons()
 			epoch.WinnerEvals = options.PopSize*epoch.Id + org.Genotype.Id
 			epoch.Champion = org
-
-			if optPath, err := utils.WriteGenomePlain("abalone_champion", e.OutputPath, org, epoch); err != nil {
-				neat.ErrorLog(fmt.Sprintf("Failed to dump champion genome, reason: %s\n", err))
-			} else {
-				neat.InfoLog(fmt.Sprintf("Dumped champion genome to: %s\n", optPath))
-			}
 		}
 
 		totalFitness = totalFitness + org.Fitness
+	}
+
+	log.Println(fmt.Sprintf("[Gen %d] Found new champion with fitness: %f", epoch.Id, epoch.Champion.Fitness))
+
+	if optPath, err := utils.WriteGenomePlain("abalone_champion", e.OutputPath, epoch.Champion, epoch); err != nil {
+		neat.ErrorLog(fmt.Sprintf("Failed to dump champion genome, reason: %s\n", err))
+	} else {
+		neat.InfoLog(fmt.Sprintf("Dumped champion genome to: %s\n", optPath))
 	}
 
 	log.Println(fmt.Sprintf("[Gen %d] Average fitness: %f for total fitness: %f and population size: %d",
