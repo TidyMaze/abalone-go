@@ -1,4 +1,4 @@
-# The seed genome configuration for XOR experiment
+# The seed genome configuration for abalone experiment
 genome:
   id: 1
   # The traits used in this genome
