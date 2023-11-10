@@ -28,7 +28,7 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 	totalFitness := 0.0
 
 	for _, org := range pop.Organisms {
-		res, err := e.orgEvaluate(org, epoch)
+		_, err := e.orgEvaluate(org, epoch)
 		if err != nil {
 			return err
 		}
