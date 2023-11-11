@@ -192,7 +192,7 @@ func main() {
 		RandSeed: seed,
 	}
 	var generationEvaluator experiment.GenerationEvaluator
-	expt.MaxFitnessScore = 100.0 // as given by fitness function definition
+	expt.MaxFitnessScore = engine.CountGames * 6 * 100
 	generationEvaluator = engine.NewAbaloneGenerationEvaluator(outDir)
 
 	// prepare to execute
