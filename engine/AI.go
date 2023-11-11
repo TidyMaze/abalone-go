@@ -51,8 +51,11 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 		neat.InfoLog(fmt.Sprintf("Dumped champion genome to: %s\n", optPath))
 	}
 
+	averageFitness := totalFitness / float64(len(pop.Organisms))
+	averageFitnessByGame := averageFitness / float64(CountGames)
+
 	log.Println(fmt.Sprintf("[Gen %d] Average fitness: %f for total fitness: %f and population size: %d",
-		epoch.Id, totalFitness/float64(len(pop.Organisms)), totalFitness, len(pop.Organisms)))
+		epoch.Id, averageFitnessByGame, totalFitness, len(pop.Organisms)))
 
 	// Fill statistics about current epoch
 	epoch.FillPopulationStatistics(pop)
