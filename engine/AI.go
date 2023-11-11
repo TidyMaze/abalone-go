@@ -60,41 +60,38 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 	epoch.FillPopulationStatistics(pop)
 
 	// Only print to file every print_every generation
-	if epoch.Solved || epoch.Id%options.PrintEvery == 0 {
+	if epoch.Id%options.PrintEvery == 0 {
 		if _, err := utils.WritePopulationPlain(e.OutputPath, pop, epoch); err != nil {
 			neat.ErrorLog(fmt.Sprintf("Failed to dump population, reason: %s\n", err))
 			return err
 		}
 	}
 
-	if epoch.Solved {
-		// print winner organism
-		org := epoch.Champion
-		utils.PrintActivationDepth(org, true)
+	org := epoch.Champion
+	//utils.PrintActivationDepth(org, true)
 
-		genomeFile := "abalone_winner_genome"
-		// Prints the winner organism's Genome to the file!
-		if orgPath, err := utils.WriteGenomePlain(genomeFile, e.OutputPath, org, epoch); err != nil {
-			neat.ErrorLog(fmt.Sprintf("Failed to dump winner organism's genome, reason: %s\n", err))
-		} else {
-			neat.InfoLog(fmt.Sprintf("Generation #%d winner's genome dumped to: %s\n", epoch.Id, orgPath))
-		}
+	genomeFile := "abalone_champion_genome"
+	// Prints the winner organism's Genome to the file!
+	if orgPath, err := utils.WriteGenomePlain(genomeFile, e.OutputPath, org, epoch); err != nil {
+		neat.ErrorLog(fmt.Sprintf("Failed to dump winner organism's genome, reason: %s\n", err))
+	} else {
+		neat.InfoLog(fmt.Sprintf("Generation #%d winner's genome dumped to: %s\n", epoch.Id, orgPath))
+	}
 
-		// Prints the winner organism's phenotype to the DOT file!
-		if orgPath, err := utils.WriteGenomeDOT(genomeFile, e.OutputPath, org, epoch); err != nil {
-			neat.ErrorLog(fmt.Sprintf("Failed to dump winner organism's phenome DOT graph, reason: %s\n", err))
-		} else {
-			neat.InfoLog(fmt.Sprintf("Generation #%d winner's phenome DOT graph dumped to: %s\n",
-				epoch.Id, orgPath))
-		}
+	// Prints the winner organism's phenotype to the DOT file!
+	if orgPath, err := utils.WriteGenomeDOT(genomeFile, e.OutputPath, org, epoch); err != nil {
+		neat.ErrorLog(fmt.Sprintf("Failed to dump winner organism's phenome DOT graph, reason: %s\n", err))
+	} else {
+		neat.InfoLog(fmt.Sprintf("Generation #%d winner's phenome DOT graph dumped to: %s\n",
+			epoch.Id, orgPath))
+	}
 
-		// Prints the winner organism's phenotype to the Cytoscape JSON file!
-		if orgPath, err := utils.WriteGenomeCytoscapeJSON(genomeFile, e.OutputPath, org, epoch); err != nil {
-			neat.ErrorLog(fmt.Sprintf("Failed to dump winner organism's phenome Cytoscape JSON graph, reason: %s\n", err))
-		} else {
-			neat.InfoLog(fmt.Sprintf("Generation #%d winner's phenome Cytoscape JSON graph dumped to: %s\n",
-				epoch.Id, orgPath))
-		}
+	// Prints the winner organism's phenotype to the Cytoscape JSON file!
+	if orgPath, err := utils.WriteGenomeCytoscapeJSON(genomeFile, e.OutputPath, org, epoch); err != nil {
+		neat.ErrorLog(fmt.Sprintf("Failed to dump winner organism's phenome Cytoscape JSON graph, reason: %s\n", err))
+	} else {
+		neat.InfoLog(fmt.Sprintf("Generation #%d winner's phenome Cytoscape JSON graph dumped to: %s\n",
+			epoch.Id, orgPath))
 	}
 
 	return nil
