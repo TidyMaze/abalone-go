@@ -2,7 +2,6 @@ package main
 
 import (
 	"abalone-go/engine"
-	"abalone-go/helpers"
 	"context"
 	"flag"
 	"fmt"
@@ -110,26 +109,53 @@ func main() {
 	traits := make([]*neat.Trait, 0)
 	traits = append(traits, neat.NewTrait())
 
-	nodes := make([]*network.NNode, 0)
+	nodesCount := 0
+	allNodes := make([]*network.NNode, 0)
+
+	inputNodes := make([]*network.NNode, 0)
+	hiddenNodes := make([]*network.NNode, 0)
+	outputNodes := make([]*network.NNode, 0)
+
 	// Add the 61*2 input nodes
 	for i := 0; i < 61*2; i++ {
-		nodes = append(nodes, network.NewNNode(i+1, network.InputNeuron))
+		n := network.NewNNode(nodesCount, network.InputNeuron)
+		allNodes = append(allNodes, n)
+		inputNodes = append(inputNodes, n)
+		nodesCount++
+	}
+
+	// Add the 10 hidden nodes
+	for i := 0; i < 10; i++ {
+		n := network.NewNNode(nodesCount, network.HiddenNeuron)
+		allNodes = append(allNodes, n)
+		hiddenNodes = append(hiddenNodes, n)
+		nodesCount++
 	}
 
 	// Add the 61 + 6 output nodes
 	for i := 0; i < 61+6; i++ {
-		nodes = append(nodes, network.NewNNode(i+1+61*2, network.OutputNeuron))
+		n := network.NewNNode(nodesCount, network.OutputNeuron)
+		allNodes = append(allNodes, n)
+		outputNodes = append(outputNodes, n)
+		nodesCount++
 	}
 
 	genes := make([]*genetics.Gene, 0)
-	// Link each input to each output
+	// Link each input to each hidden node
 	for i := 0; i < 61*2; i++ {
-		for j := 0; j < 61+6; j++ {
-			genes = append(genes, genetics.NewGene(helpers.RandWeight(), nodes[i], nodes[j+61*2], false, 1.0, 0))
+		for j := 0; j < 10; j++ {
+			genes = append(genes, genetics.NewGene(0.0, inputNodes[i], hiddenNodes[j], false, 1, 0.0))
 		}
 	}
 
-	startGenome := genetics.NewGenome(1, traits, nodes, genes)
+	// Link each hidden node to each output node
+	for i := 0; i < 10; i++ {
+		for j := 0; j < 61+6; j++ {
+			genes = append(genes, genetics.NewGene(0.0, hiddenNodes[i], outputNodes[j], false, 1, 0.0))
+		}
+	}
+
+	startGenome := genetics.NewGenome(1, traits, allNodes, genes)
 	//fmt.Println(startGenome)
 
 	// Check if output dir exists
