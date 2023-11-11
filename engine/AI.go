@@ -186,7 +186,7 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 	}
 
 	scoreDiff := float64(totalCaptured) - float64(totalEnemyCaptured)
-	score := scoreDiff*100 + float64(validMovesCount)/float64(CountGames)
+	score := (scoreDiff*100 + float64(validMovesCount)) / float64(CountGames)
 	ideal := float64(6 * 100) // win every game at 6-0 for player 1
 
 	//log.Println(fmt.Sprintf("[Gen %d][Org %d] Finished ranking organism, score diff: %f, invalid moves: %d, score: %f, ideal: %f",
