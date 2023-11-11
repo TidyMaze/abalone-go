@@ -14,7 +14,7 @@ import (
 	"os"
 )
 
-const CountGames = 50
+const CountGames = 100
 
 type AbaloneGenerationEvaluator struct {
 	OutputPath string
