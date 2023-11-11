@@ -11,6 +11,7 @@ import (
 	"github.com/yaricom/goNEAT/v4/neat/network"
 	"log"
 	"math"
+	"os"
 )
 
 const CountGames = 100
@@ -93,6 +94,36 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 		neat.InfoLog(fmt.Sprintf("Generation #%d winner's phenome Cytoscape JSON graph dumped to: %s\n",
 			epoch.Id, orgPath))
 	}
+
+	// write epoch, average fitness and champion fitness to CSV file
+	if err := writeGenerationCSV(e.OutputPath, epoch); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func writeGenerationCSV(outputPath string, epoch *experiment.Generation) error {
+	epochId := epoch.Id
+	averageFitness := epoch.Fitness.Mean()
+	championFitness := epoch.Champion.Fitness
+
+	// append to file
+	filePath := outputPath + "/generation.csv"
+
+	f, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+
+	if err != nil {
+		return err
+	}
+
+	defer f.Close()
+
+	if _, err := f.WriteString(fmt.Sprintf("%d,%f,%f\n", epochId, averageFitness, championFitness)); err != nil {
+		return err
+	}
+
+	log.Println(fmt.Sprintf("[Gen %d] Wrote generation stats to CSV file %s", epochId, filePath))
 
 	return nil
 }
