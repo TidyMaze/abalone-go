@@ -14,7 +14,7 @@ import (
 	"os"
 )
 
-const CountGames = 100
+const CountGames = 80
 
 type AbaloneGenerationEvaluator struct {
 	OutputPath string
@@ -213,8 +213,8 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 	}
 
 	scoreDiff := float64(totalCaptured) - float64(totalEnemyCaptured)
-	score := (scoreDiff*100 + float64(validMovesCount)) / float64(CountGames)
-	ideal := float64(6 * 100) // win every game at 6-0 for player 1
+	score := (scoreDiff*100 + float64(validMovesCount)) /** float64(CountGames) */
+	ideal := float64(6*100) * CountGames                // win every game at 6-0 for player 1
 
 	//log.Println(fmt.Sprintf("[Gen %d][Org %d] Finished ranking organism, score diff: %f, invalid moves: %d, score: %f, ideal: %f",
 	//	epoch.Id, organism.Genotype.Id, scoreDiff, invalidMovesCount, score, ideal))
