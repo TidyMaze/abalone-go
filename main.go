@@ -112,6 +112,8 @@ func main() {
 	nodesCount := 0
 	allNodes := make([]*network.NNode, 0)
 
+	hiddenNodesCount := 1
+
 	inputNodes := make([]*network.NNode, 0)
 	hiddenNodes := make([]*network.NNode, 0)
 	outputNodes := make([]*network.NNode, 0)
@@ -125,7 +127,7 @@ func main() {
 	}
 
 	// Add the 10 hidden nodes
-	for i := 0; i < 10; i++ {
+	for i := 0; i < hiddenNodesCount; i++ {
 		n := network.NewNNode(nodesCount, network.HiddenNeuron)
 		allNodes = append(allNodes, n)
 		hiddenNodes = append(hiddenNodes, n)
@@ -143,13 +145,13 @@ func main() {
 	genes := make([]*genetics.Gene, 0)
 	// Link each input to each hidden node
 	for i := 0; i < 61*2; i++ {
-		for j := 0; j < 10; j++ {
+		for j := 0; j < hiddenNodesCount; j++ {
 			genes = append(genes, genetics.NewGene(0.0, inputNodes[i], hiddenNodes[j], false, 1, 0.0))
 		}
 	}
 
 	// Link each hidden node to each output node
-	for i := 0; i < 10; i++ {
+	for i := 0; i < hiddenNodesCount; i++ {
 		for j := 0; j < 61+6; j++ {
 			genes = append(genes, genetics.NewGene(0.0, hiddenNodes[i], outputNodes[j], false, 1, 0.0))
 		}
