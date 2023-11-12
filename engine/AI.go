@@ -65,6 +65,9 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 	// Fill statistics about current epoch
 	epoch.FillPopulationStatistics(pop)
 
+	helpers.AssertEqual(false, pop.MeanFitness == 0.0)
+	helpers.AssertEqual(false, epoch.Fitness.Mean() == 0.0)
+
 	// Only print to file every print_every generation
 	if epoch.Id%options.PrintEvery == 0 {
 		if _, err := utils.WritePopulationPlain(e.OutputPath, pop, epoch); err != nil {
