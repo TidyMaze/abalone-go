@@ -192,7 +192,7 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 		//log.Println(fmt.Sprintf("[Gen %d][Org %d] Starting game %d", epoch.Id, organism.Genotype.Id, gameId))
 		game := NewGame(startingGrid)
 
-		for !game.IsOver() && game.Turn < 60 {
+		for !game.IsOver() && game.Turn < 127 {
 			//log.Println(fmt.Sprintf("[Gen %d][Org %d] Game %d, turn %d", epoch.Id, organism.Genotype.Id, gameId, game.Turn))
 
 			var move Move
