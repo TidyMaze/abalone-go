@@ -13,6 +13,7 @@ import (
 	"math"
 	"math/rand"
 	"os"
+	"sync"
 )
 
 const CountGames = 50
@@ -29,26 +30,36 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 
 	totalFitness := 0.0
 
+	wg := sync.WaitGroup{}
+
 	for _, org := range pop.Organisms {
 		//log.Println(fmt.Sprintf("[Gen %d] Evaluating organism: %d", epoch.Id, org.Genotype.Id))
 
-		_, err := e.orgEvaluate(org, epoch)
+		wg.Add(1)
 
-		log.Println(fmt.Sprintf("[Gen %d] Evaluated organism: %d, fitness: %f", epoch.Id, org.Genotype.Id, org.Fitness))
+		org := org
+		go func() {
+			defer wg.Done()
 
-		if err != nil {
-			panic(err)
-		}
+			_, err := e.orgEvaluate(org, epoch)
+			if err != nil {
+				panic(err)
+			}
 
-		if epoch.Champion == nil || org.Fitness > epoch.Champion.Fitness {
-			epoch.WinnerNodes = len(org.Genotype.Nodes)
-			epoch.WinnerGenes = org.Genotype.Extrons()
-			epoch.WinnerEvals = options.PopSize*epoch.Id + org.Genotype.Id
-			epoch.Champion = org
-		}
+			log.Println(fmt.Sprintf("[Gen %d] Evaluated organism: %d, fitness: %f", epoch.Id, org.Genotype.Id, org.Fitness))
 
-		totalFitness = totalFitness + org.Fitness
+			if epoch.Champion == nil || org.Fitness > epoch.Champion.Fitness {
+				epoch.WinnerNodes = len(org.Genotype.Nodes)
+				epoch.WinnerGenes = org.Genotype.Extrons()
+				epoch.WinnerEvals = options.PopSize*epoch.Id + org.Genotype.Id
+				epoch.Champion = org
+			}
+
+			totalFitness = totalFitness + org.Fitness
+		}()
 	}
+
+	wg.Wait()
 
 	log.Println(fmt.Sprintf("[Gen %d] Found new champion with fitness: %f", epoch.Id, epoch.Champion.Fitness))
 
