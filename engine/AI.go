@@ -76,6 +76,8 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 	// Fill statistics about current epoch
 	epoch.FillPopulationStatistics(pop)
 
+	pop.MeanFitness = epoch.Fitness.Mean()
+
 	helpers.AssertEqual(false, pop.MeanFitness == 0.0)
 	helpers.AssertEqual(false, epoch.Fitness.Mean() == 0.0)
 
