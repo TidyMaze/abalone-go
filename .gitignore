@@ -2,3 +2,5 @@
 /main.wasm
 /main
 /abalone-go
+out-*
+out/*
