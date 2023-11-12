@@ -48,7 +48,7 @@ type Game struct {
 var emptyGrid = buildEmptyGrid()
 var startingGrid = buildStartingGrid()
 
-func NewGame(grid *map[Coord3D]int8) *Game {
+func NewGame(grid map[Coord3D]int8) *Game {
 	game := &Game{
 		score:         make(map[int8]int8),
 		currentPlayer: 1,
@@ -214,7 +214,7 @@ func (g *Game) pushSingle(from Coord3D, direction Direction) (bool, error) {
 }
 
 func (g *Game) Copy() *Game {
-	newGame := NewGame(&g.grid)
+	newGame := NewGame(g.grid)
 	newGame.score = copyScore(g.score)
 	newGame.currentPlayer = g.currentPlayer
 	newGame.Turn = g.Turn
@@ -287,10 +287,10 @@ func copyScore(score map[int8]int8) map[int8]int8 {
 	return newScore
 }
 
-func copyGrid(grid *map[Coord3D]int8) map[Coord3D]int8 {
-	newGrid := make(map[Coord3D]int8, len(*grid))
+func copyGrid(grid map[Coord3D]int8) map[Coord3D]int8 {
+	newGrid := make(map[Coord3D]int8, len(grid))
 
-	for k, v := range *grid {
+	for k, v := range grid {
 		newGrid[k] = v
 	}
 

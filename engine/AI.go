@@ -167,7 +167,7 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 
 	for gameId := 0; gameId < CountGames; gameId++ {
 		//log.Println(fmt.Sprintf("[Gen %d][Org %d] Starting game %d", epoch.Id, organism.Genotype.Id, gameId))
-		game := NewGame(&startingGrid)
+		game := NewGame(startingGrid)
 
 		for !game.IsOver() && game.Turn < 127 {
 			//log.Println(fmt.Sprintf("[Gen %d][Org %d] Game %d, turn %d", epoch.Id, organism.Genotype.Id, gameId, game.Turn))
