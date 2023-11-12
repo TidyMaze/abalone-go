@@ -14,7 +14,7 @@ import (
 	"os"
 )
 
-const CountGames = 100
+const CountGames = 10
 
 type AbaloneGenerationEvaluator struct {
 	OutputPath string
@@ -169,7 +169,7 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 		//log.Println(fmt.Sprintf("[Gen %d][Org %d] Starting game %d", epoch.Id, organism.Genotype.Id, gameId))
 		game := NewGame(startingGrid)
 
-		for !game.IsOver() && game.Turn < 127 {
+		for !game.IsOver() && game.Turn < 60 {
 			//log.Println(fmt.Sprintf("[Gen %d][Org %d] Game %d, turn %d", epoch.Id, organism.Genotype.Id, gameId, game.Turn))
 
 			var move Move
