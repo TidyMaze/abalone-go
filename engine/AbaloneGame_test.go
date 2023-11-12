@@ -197,7 +197,7 @@ func TestPushSingleCaptured(t *testing.T) {
 		t.Fatalf("Error: %v", err)
 	}
 
-	helpers.AssertEqual(1, score)
+	helpers.AssertEqual(int8(1), score)
 
 	expected := NewGame(&emptyGrid)
 	expected.SetGrid(Coord3D{2, -2, 0}, 1)
@@ -266,7 +266,7 @@ func TestCurrentPlayerAfterPush(t *testing.T) {
 
 	println(gameCopy.Show())
 
-	helpers.AssertEqual(2, gameCopy.currentPlayer)
+	helpers.AssertEqual(int8(2), gameCopy.currentPlayer)
 }
 
 func TestCannotSuicide(t *testing.T) {
