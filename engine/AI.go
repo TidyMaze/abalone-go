@@ -11,6 +11,7 @@ import (
 	"github.com/yaricom/goNEAT/v4/neat/network"
 	"log"
 	"math"
+	"math/rand"
 	"os"
 )
 
@@ -269,6 +270,10 @@ func (e *AbaloneGenerationEvaluator) predictSingleMove(phenotype *network.Networ
 
 	bestMoveScore := -1000000.0
 	var bestMove *Move
+
+	rand.Shuffle(len(validMoves), func(i, j int) {
+		validMoves[i], validMoves[j] = validMoves[j], validMoves[i]
+	})
 
 	for _, move := range validMoves {
 		nextState := game.Copy()
