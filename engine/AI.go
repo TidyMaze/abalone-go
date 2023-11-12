@@ -36,7 +36,7 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 		//log.Println(fmt.Sprintf("[Gen %d] Evaluated organism: %d, fitness: %f", epoch.Id, org.Genotype.Id, org.Fitness))
 
 		if err != nil {
-			return err
+			panic(err)
 		}
 
 		if epoch.Champion == nil || org.Fitness > epoch.Champion.Fitness {
