@@ -79,7 +79,7 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 	bestFitnessBySpecy := epoch.Fitness
 	log.Println(fmt.Sprintf("[Gen %d] Epoch statistics: %f, fitness: %v", epoch.Id, bestFitnessBySpecy.Mean(), bestFitnessBySpecy))
 
-	pop.MeanFitness = bestFitnessBySpecy.Mean()
+	pop.MeanFitness = averageFitness
 
 	helpers.AssertEqual(false, pop.MeanFitness == 0.0)
 	helpers.AssertEqual(false, bestFitnessBySpecy.Mean() == 0.0)
