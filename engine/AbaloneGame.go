@@ -46,8 +46,9 @@ type Game struct {
 }
 
 var emptyGrid = buildEmptyGrid()
+var startingGrid = buildStartingGrid()
 
-func NewGame() *Game {
+func NewGame(grid *map[Coord3D]int) *Game {
 	game := &Game{
 		score:         make(map[int]int),
 		currentPlayer: 1,
@@ -56,7 +57,7 @@ func NewGame() *Game {
 	game.score[1] = 0
 	game.score[2] = 0
 
-	game.grid = copyGrid(emptyGrid)
+	game.grid = copyGrid(grid)
 	return game
 }
 
@@ -227,9 +228,8 @@ func findAllCells(from Coord3D, direction Direction) []Coord3D {
 
 }
 
-func (g *Game) Copy() Game {
-	newGame := Game{}
-	newGame.grid = copyGrid(g.grid)
+func (g *Game) Copy() *Game {
+	newGame := NewGame(&g.grid)
 	newGame.score = copyScore(g.score)
 	newGame.currentPlayer = g.currentPlayer
 	newGame.Turn = g.Turn
@@ -302,10 +302,10 @@ func copyScore(score map[int]int) map[int]int {
 	return newScore
 }
 
-func copyGrid(grid map[Coord3D]int) map[Coord3D]int {
+func copyGrid(grid *map[Coord3D]int) map[Coord3D]int {
 	newGrid := make(map[Coord3D]int)
 
-	for k, v := range grid {
+	for k, v := range *grid {
 		newGrid[k] = v
 	}
 

@@ -95,7 +95,7 @@ func buildEmptyGrid() map[Coord3D]int {
 }
 
 func buildStartingGrid() map[Coord3D]int {
-	grid := copyGrid(emptyGrid)
+	grid := copyGrid(&emptyGrid)
 
 	// first line
 	grid[Coord3D{0, 4, -4}] = 1

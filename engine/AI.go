@@ -162,8 +162,7 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 	validMovesCount := 0
 
 	for gameId := 0; gameId < CountGames; gameId++ {
-		game := NewGame()
-		game.grid = buildStartingGrid()
+		game := NewGame(&startingGrid)
 
 		for !game.IsOver() && game.Turn < 30 {
 			var move Move
