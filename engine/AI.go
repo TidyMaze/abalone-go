@@ -120,16 +120,15 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 	}
 
 	// write epoch, average fitness and champion fitness to CSV file
-	if err := writeGenerationCSV(e.OutputPath, epoch); err != nil {
+	if err := writeGenerationCSV(e.OutputPath, epoch, averageFitness); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func writeGenerationCSV(outputPath string, epoch *experiment.Generation) error {
+func writeGenerationCSV(outputPath string, epoch *experiment.Generation, averageFitness float64) error {
 	epochId := epoch.Id
-	averageFitness := epoch.Fitness.Mean()
 	championFitness := epoch.Champion.Fitness
 
 	// append to file
