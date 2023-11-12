@@ -170,7 +170,7 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 		//log.Println(fmt.Sprintf("[Gen %d][Org %d] Starting game %d", epoch.Id, organism.Genotype.Id, gameId))
 		game := NewGame(&startingGrid)
 
-		for !game.IsOver() && game.Turn < 100 {
+		for !game.IsOver() && game.Turn < 20 {
 			//log.Println(fmt.Sprintf("[Gen %d][Org %d] Game %d, turn %d", epoch.Id, organism.Genotype.Id, gameId, game.Turn))
 
 			var move Move
@@ -223,8 +223,8 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 	score := (scoreDiff*100 + float64(validMovesCount)) / float64(CountGames)
 	ideal := float64(6 * 100) // win every game at 6-0 for player 1
 
-	//log.Println(fmt.Sprintf("[Gen %d][Org %d] Finished ranking organism, score diff: %f, invalid moves: %d, score: %f, ideal: %f",
-	//	epoch.Id, organism.Genotype.Id, scoreDiff, invalidMovesCount, score, ideal))
+	log.Println(fmt.Sprintf("[Gen %d][Org %d] Finished ranking organism, score diff: %f, valid moves: %d, score: %f, ideal: %f",
+		epoch.Id, organism.Genotype.Id, scoreDiff, validMovesCount, score, ideal))
 
 	organism.Fitness = score
 	organism.Error = math.Abs(ideal - score)
