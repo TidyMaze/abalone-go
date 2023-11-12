@@ -62,6 +62,11 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 	log.Println(fmt.Sprintf("[Gen %d] Average fitness: %f for total fitness: %f and population size: %d",
 		epoch.Id, averageFitness, totalFitness, len(pop.Organisms)))
 
+	for _, org := range pop.Organisms {
+		println(fmt.Sprintf("Org %d, specy %d, fitness: %f, error: %f",
+			org.Genotype.Id, org.Species.Id, org.Fitness, org.Error))
+	}
+
 	// Fill statistics about current epoch
 	epoch.FillPopulationStatistics(pop)
 
