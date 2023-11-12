@@ -29,11 +29,11 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 	totalFitness := 0.0
 
 	for _, org := range pop.Organisms {
-		log.Println(fmt.Sprintf("[Gen %d] Evaluating organism: %d", epoch.Id, org.Genotype.Id))
+		//log.Println(fmt.Sprintf("[Gen %d] Evaluating organism: %d", epoch.Id, org.Genotype.Id))
 
 		_, err := e.orgEvaluate(org, epoch)
 
-		log.Println(fmt.Sprintf("[Gen %d] Evaluated organism: %d, fitness: %f", epoch.Id, org.Genotype.Id, org.Fitness))
+		//log.Println(fmt.Sprintf("[Gen %d] Evaluated organism: %d, fitness: %f", epoch.Id, org.Genotype.Id, org.Fitness))
 
 		if err != nil {
 			return err
