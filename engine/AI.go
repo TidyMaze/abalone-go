@@ -164,13 +164,12 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 
 	totalCaptured := 0
 	totalEnemyCaptured := 0
-	validMovesCount := 0
 
 	for gameId := 0; gameId < CountGames; gameId++ {
 		//log.Println(fmt.Sprintf("[Gen %d][Org %d] Starting game %d", epoch.Id, organism.Genotype.Id, gameId))
 		game := NewGame(&startingGrid)
 
-		for !game.IsOver() && game.Turn < 20 {
+		for !game.IsOver() {
 			//log.Println(fmt.Sprintf("[Gen %d][Org %d] Game %d, turn %d", epoch.Id, organism.Genotype.Id, gameId, game.Turn))
 
 			var move Move
@@ -195,8 +194,7 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 						log.Println(fmt.Sprintf("[Gen %d][Org %d] Invalid move: %v", epoch.Id, organism.Genotype.Id, move))
 						game.Winner = 2
 						game.score[2] = 6
-					} else {
-						validMovesCount = validMovesCount + 1
+						panic(fmt.Sprintf("Invalid move: %v", move))
 					}
 				default:
 					panic(fmt.Sprintf("Invalid move type: %T", move))
@@ -219,12 +217,12 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 		totalEnemyCaptured += int(game.score[2])
 	}
 
-	scoreDiff := float64(totalCaptured) - float64(totalEnemyCaptured)
-	score := (scoreDiff*100 + float64(validMovesCount)) / float64(CountGames)
-	ideal := float64(6 * 100) // win every game at 6-0 for player 1
+	avgScoreDiff := (float64(totalCaptured) - float64(totalEnemyCaptured)) / float64(CountGames)
+	score := avgScoreDiff
+	ideal := float64(6) // win every game at 6-0 for player 1
 
-	log.Println(fmt.Sprintf("[Gen %d][Org %d] Finished ranking organism, score diff: %f, valid moves: %d, score: %f, ideal: %f",
-		epoch.Id, organism.Genotype.Id, scoreDiff, validMovesCount, score, ideal))
+	log.Println(fmt.Sprintf("[Gen %d][Org %d] Finished ranking organism, score diff: %f, score: %f, ideal: %f",
+		epoch.Id, organism.Genotype.Id, avgScoreDiff, score, ideal))
 
 	organism.Fitness = score
 	organism.Error = math.Abs(ideal - score)
