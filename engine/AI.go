@@ -29,6 +29,8 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 	totalFitness := 0.0
 
 	for _, org := range pop.Organisms {
+		log.Println(fmt.Sprintf("[Gen %d] Evaluating organism: %d", epoch.Id, org.Genotype.Id))
+
 		_, err := e.orgEvaluate(org, epoch)
 		if err != nil {
 			return err
@@ -162,17 +164,24 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 	validMovesCount := 0
 
 	for gameId := 0; gameId < CountGames; gameId++ {
+		//log.Println(fmt.Sprintf("[Gen %d][Org %d] Starting game %d", epoch.Id, organism.Genotype.Id, gameId))
 		game := NewGame(&startingGrid)
 
 		for !game.IsOver() && game.Turn < 100 {
+			//log.Println(fmt.Sprintf("[Gen %d][Org %d] Game %d, turn %d", epoch.Id, organism.Genotype.Id, gameId, game.Turn))
+
 			var move Move
 			if game.currentPlayer == 1 {
 				// player 1 is the organism
 
-				move, err = e.predictSingleMove(phenotype, netDepth, *game)
+				movePtr, err := e.predictSingleMove(phenotype, netDepth, *game)
+
 				if err != nil {
 					return false, err
 				}
+
+				move = *movePtr
+				//log.Println(fmt.Sprintf("[Gen %d][Org %d] Predicted move: %v", epoch.Id, organism.Genotype.Id, move))
 
 				switch move.(type) {
 				case PushLine:
@@ -180,17 +189,14 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 
 					if err != nil {
 						// invalid move, opponent wins
+						log.Println(fmt.Sprintf("[Gen %d][Org %d] Invalid move: %v", epoch.Id, organism.Genotype.Id, move))
 						game.Winner = 2
 						game.score[2] = 6
 					} else {
-						//log.Println(fmt.Sprintf("Predicted move: %v", move))
-
-						if err != nil {
-							return false, err
-						}
-
 						validMovesCount = validMovesCount + 1
 					}
+				default:
+					panic(fmt.Sprintf("Invalid move type: %T", move))
 				}
 			} else {
 				// player 2 is the random opponent
@@ -223,138 +229,73 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 	return false, nil
 }
 
-func (e *AbaloneGenerationEvaluator) predictSingleMove(phenotype *network.Network, netDepth int, game Game) (Move, error) {
-	err := error(nil)
+func (e *AbaloneGenerationEvaluator) predictSingleMove(phenotype *network.Network, netDepth int, game Game) (*Move, error) {
+	validMoves := game.GetValidMoves()
 
-	var in []float64
+	if len(validMoves) == 0 {
+		return nil, fmt.Errorf("no valid moves")
+	}
 
-	// Set the input values
-	for y := int8(-4); y <= 4; y++ {
-		for x := int8(-4); x <= 4; x++ {
-			coord := Coord2D{x, y}.To3D()
-			if IsValidCoord(coord) {
-				cellOwner := game.GetGrid(coord)
-				player1 := 0.0
-				player2 := 0.0
+	bestMoveScore := -1000000.0
+	var bestMove *Move
 
-				if cellOwner == 1 {
-					player1 = 1.0
-				} else if cellOwner == 2 {
-					player2 = 1.0
+	for _, move := range validMoves {
+		nextState := game.Copy()
+		err := nextState.Move(move)
+
+		if err != nil {
+			return nil, err
+		}
+
+		var in []float64
+
+		// Set the input values
+		for y := int8(-4); y <= 4; y++ {
+			for x := int8(-4); x <= 4; x++ {
+				coord := Coord2D{x, y}.To3D()
+				if IsValidCoord(coord) {
+					cellOwner := nextState.GetGrid(coord)
+					player1 := 0.0
+					player2 := 0.0
+
+					if cellOwner == 1 {
+						player1 = 1.0
+					} else if cellOwner == 2 {
+						player2 = 1.0
+					}
+
+					in = append(in, player1, player2)
 				}
-
-				in = append(in, player1, player2)
 			}
 		}
-	}
 
-	if err = phenotype.LoadSensors(in); err != nil {
-		neat.ErrorLog(fmt.Sprintf("Failed to load sensors: %s", err))
-		return nil, err
-	}
+		if err = phenotype.LoadSensors(in); err != nil {
+			neat.ErrorLog(fmt.Sprintf("Failed to load sensors: %s", err))
+			return nil, err
+		}
 
-	// Use depth to ensure full relaxation
-	if success, err := phenotype.ForwardSteps(netDepth); err != nil || !success {
-		neat.ErrorLog(fmt.Sprintf("Failed to activate network: %s", err))
-		return nil, err
-	}
+		// Use depth to ensure full relaxation
+		if success, err := phenotype.ForwardSteps(netDepth); err != nil || !success {
+			neat.ErrorLog(fmt.Sprintf("Failed to activate network: %s", err))
+			return nil, err
+		}
 
-	// Read output
-	// Cell is the index of max output in the first 61 nodes
-	// Direction is the index of max output in the last 6 nodes
-	cell := -1
-	for i := 0; i < 61; i++ {
-		if cell == -1 || (phenotype.Outputs[i].Activation > phenotype.Outputs[cell].Activation) {
-			cell = i
+		// Read output
+		score := phenotype.Outputs[0].Activation
+
+		//log.Println(fmt.Sprintf("Move: %v, score: %f", move, score))
+
+		if score > bestMoveScore || bestMove == nil {
+			bestMoveScore = score
+			bestMove = &move
+		}
+
+		// Flush network for subsequent use
+		if _, err = phenotype.Flush(); err != nil {
+			neat.ErrorLog(fmt.Sprintf("Failed to flush network: %s", err))
+			return nil, err
 		}
 	}
 
-	direction := -1
-	for i := 61; i < 67; i++ {
-		if direction == -1 || (phenotype.Outputs[i].Activation > phenotype.Outputs[direction].Activation) {
-			direction = i
-		}
-	}
-
-	// Flush network for subsequent use
-	if _, err = phenotype.Flush(); err != nil {
-		neat.ErrorLog(fmt.Sprintf("Failed to flush network: %s", err))
-		return nil, err
-	}
-
-	indexToCoord3D := [61]Coord3D{
-		{0, 4, -4},
-		{1, 3, -4},
-		{2, 2, -4},
-		{3, 1, -4},
-		{4, 0, -4},
-
-		{-1, 4, -3},
-		{0, 3, -3},
-		{1, 2, -3},
-		{2, 1, -3},
-		{3, 0, -3},
-		{4, -1, -3},
-
-		{-2, 4, -2},
-		{-1, 3, -2},
-		{0, 2, -2},
-		{1, 1, -2},
-		{2, 0, -2},
-		{3, -1, -2},
-		{4, -2, -2},
-
-		{-3, 4, -1},
-		{-2, 3, -1},
-		{-1, 2, -1},
-		{0, 1, -1},
-		{1, 0, -1},
-		{2, -1, -1},
-		{3, -2, -1},
-		{4, -3, -1},
-
-		{-4, 4, 0},
-		{-3, 3, 0},
-		{-2, 2, 0},
-		{-1, 1, 0},
-		{0, 0, 0},
-		{1, -1, 0},
-		{2, -2, 0},
-		{3, -3, 0},
-		{4, -4, 0},
-
-		{-4, 3, 1},
-		{-3, 2, 1},
-		{-2, 1, 1},
-		{-1, 0, 1},
-		{0, -1, 1},
-		{1, -2, 1},
-		{2, -3, 1},
-		{3, -4, 1},
-
-		{-4, 2, 2},
-		{-3, 1, 2},
-		{-2, 0, 2},
-		{-1, -1, 2},
-		{0, -2, 2},
-		{1, -3, 2},
-		{2, -4, 2},
-
-		{-4, 1, 3},
-		{-3, 0, 3},
-		{-2, -1, 3},
-		{-1, -2, 3},
-		{0, -3, 3},
-		{1, -4, 3},
-
-		{-4, 0, 4},
-		{-3, -1, 4},
-		{-2, -2, 4},
-		{-1, -3, 4},
-		{0, -4, 4},
-	}
-
-	fromCoord := indexToCoord3D[cell]
-
-	return PushLine{fromCoord, Direction(direction - 61)}, nil
+	return bestMove, nil
 }
