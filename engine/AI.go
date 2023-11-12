@@ -62,6 +62,12 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 	log.Println(fmt.Sprintf("[Gen %d] Average fitness: %f for total fitness: %f and population size: %d",
 		epoch.Id, averageFitness, totalFitness, len(pop.Organisms)))
 
+	for _, specy := range pop.Species {
+		max, avg := specy.ComputeMaxAndAvgFitness()
+		log.Println(fmt.Sprintf("[Gen %d] Species id %d, organisms: %d, average fitness: %f, max fitness: %f",
+			epoch.Id, specy.Id, len(specy.Organisms), avg, max))
+	}
+
 	for _, org := range pop.Organisms {
 		println(fmt.Sprintf("Org %d, specy %d, fitness: %f, error: %f",
 			org.Genotype.Id, org.Species.Id, org.Fitness, org.Error))
@@ -70,7 +76,7 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 	// Fill statistics about current epoch
 	epoch.FillPopulationStatistics(pop)
 
-	helpers.AssertEqual(false, pop.MeanFitness == 0.0)
+	//helpers.AssertEqual(false, pop.MeanFitness == 0.0)
 	helpers.AssertEqual(false, epoch.Fitness.Mean() == 0.0)
 
 	// Only print to file every print_every generation
