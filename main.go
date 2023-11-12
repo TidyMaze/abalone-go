@@ -197,9 +197,11 @@ func main() {
 	errChan := make(chan error)
 	ctx, cancel := context.WithCancel(context.Background())
 
+	trialObserver := myObserver{}
+
 	// run experiment in the separate GO routine
 	go func() {
-		if err = expt.Execute(neat.NewContext(ctx, neatOptions), startGenome, generationEvaluator, nil); err != nil {
+		if err = expt.Execute(neat.NewContext(ctx, neatOptions), startGenome, generationEvaluator, trialObserver); err != nil {
 			errChan <- err
 		} else {
 			errChan <- nil
@@ -253,4 +255,19 @@ func main() {
 	} else if err = expt.WriteNPZ(npzResFile); err != nil {
 		log.Fatal("Failed to save experiment results as NPZ file", err)
 	}
+}
+
+type myObserver struct {
+}
+
+func (m myObserver) TrialRunStarted(trial *experiment.Trial) {
+	log.Println(fmt.Sprintf("Trial run started: %d", trial.Id))
+}
+
+func (m myObserver) TrialRunFinished(trial *experiment.Trial) {
+	log.Println(fmt.Sprintf("Trial run finished: %d", trial.Id))
+}
+
+func (m myObserver) EpochEvaluated(trial *experiment.Trial, epoch *experiment.Generation) {
+	log.Println(fmt.Sprintf("Epoch evaluated: %d", epoch.Id))
 }
