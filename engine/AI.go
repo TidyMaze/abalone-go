@@ -34,7 +34,7 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 
 		_, err := e.orgEvaluate(org, epoch)
 
-		//log.Println(fmt.Sprintf("[Gen %d] Evaluated organism: %d, fitness: %f", epoch.Id, org.Genotype.Id, org.Fitness))
+		log.Println(fmt.Sprintf("[Gen %d] Evaluated organism: %d, fitness: %f", epoch.Id, org.Genotype.Id, org.Fitness))
 
 		if err != nil {
 			panic(err)
@@ -164,10 +164,10 @@ func NewAbaloneGenerationEvaluator(outputPath string) experiment.GenerationEvalu
 // orgEvaluate evaluates fitness of the provided organism
 func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, epoch *experiment.Generation) (bool, error) {
 	// evaluate the organism by running 100 games against random opponent
-	// fitness is the win rate of the organism
+	// fitness is the average score difference between the organism and the opponent
 
 	// INPUT: 61 cells, 2 possible states (1,2) = 122 input nodes
-	// OUTPUT: 61 nodes for the push origin, 6 nodes for the push direction = 67 output nodes
+	// OUTPUT: 1 node for board evaluation
 
 	phenotype, err := organism.Phenotype()
 	if err != nil {
