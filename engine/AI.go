@@ -46,8 +46,6 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 				panic(err)
 			}
 
-			log.Println(fmt.Sprintf("[Gen %d] Evaluated organism: %d, fitness: %f", epoch.Id, org.Genotype.Id, org.Fitness))
-
 			if epoch.Champion == nil || org.Fitness > epoch.Champion.Fitness {
 				epoch.WinnerNodes = len(org.Genotype.Nodes)
 				epoch.WinnerGenes = org.Genotype.Extrons()
