@@ -112,7 +112,7 @@ func main() {
 	nodesCount := 0
 	allNodes := make([]*network.NNode, 0)
 
-	hiddenNodesCount := 2
+	hiddenNodesCount := 10
 
 	inputNodes := make([]*network.NNode, 0)
 	hiddenNodes := make([]*network.NNode, 0)
