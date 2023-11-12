@@ -76,7 +76,7 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 	// Fill statistics about current epoch
 	epoch.FillPopulationStatistics(pop)
 
-	log.Println(fmt.Sprintf("[Gen %d] Epoch statistics: %f", epoch.Id, epoch.Fitness.Mean()))
+	log.Println(fmt.Sprintf("[Gen %d] Epoch statistics: %f, fitness: %v", epoch.Id, epoch.Fitness.Mean(), epoch.Fitness))
 
 	pop.MeanFitness = epoch.Fitness.Mean()
 
