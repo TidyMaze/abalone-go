@@ -213,6 +213,9 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 			}
 		}
 
+		log.Println(fmt.Sprintf("[Gen %d][Org %d] Finished game %d, score: %v after %d turns",
+			epoch.Id, organism.Genotype.Id, gameId, game.score, game.Turn))
+
 		totalCaptured += int(game.score[1])
 		totalEnemyCaptured += int(game.score[2])
 	}
