@@ -142,8 +142,8 @@ func (g *Game) checkCanPush(from Coord3D, direction Direction) ([]Coord3D, []Coo
 	// check that there are between 1 and 3 marbles in the first cells,
 	// followed by 0 marbles or an inferior number of enemy marbles
 
-	myFirstCells := make([]Coord3D, 0, 9)
-	nextEnemyCells := make([]Coord3D, 0, 9)
+	myFirstCells := make([]Coord3D, 0, 3)
+	nextEnemyCells := make([]Coord3D, 0, 3)
 
 	currentCell := from
 

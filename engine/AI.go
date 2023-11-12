@@ -176,16 +176,15 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 
 				switch move.(type) {
 				case PushLine:
-					_, _, pushError := game.checkCanPush(move.(PushLine).From, move.(PushLine).Direction)
+					err := game.Move(move)
 
-					if pushError != nil {
+					if err != nil {
 						// invalid move, opponent wins
 						game.Winner = 2
 						game.score[2] = 6
 					} else {
 						//log.Println(fmt.Sprintf("Predicted move: %v", move))
 
-						err := game.Move(move)
 						if err != nil {
 							return false, err
 						}
