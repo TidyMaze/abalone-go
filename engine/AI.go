@@ -124,6 +124,11 @@ func writeGenerationCSV(outputPath string, epoch *experiment.Generation) error {
 
 	defer f.Close()
 
+	helpers.AssertEqual(false, averageFitness == 0.0)
+
+	log.Println(fmt.Sprintf("[Gen %d] Writing generation stats (average fitness: %f, champion fitness: %f) to CSV file %s",
+		epochId, averageFitness, championFitness, filePath))
+
 	if _, err := f.WriteString(fmt.Sprintf("%d,%f,%f\n", epochId, averageFitness, championFitness)); err != nil {
 		return err
 	}
