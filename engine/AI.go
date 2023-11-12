@@ -252,7 +252,7 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 	normalized := (score - worst) / (ideal - worst)
 
 	log.Println(fmt.Sprintf("[Gen %d][Org %d] Finished ranking organism, score diff: %f, normalized: %f, ideal: %f",
-		epoch.Id, organism.Genotype.Id, avgScoreDiff, normalized, ideal))
+		epoch.Id, organism.Genotype.Id, avgScoreDiff, normalized, 1.0))
 
 	organism.Fitness = normalized
 	organism.Error = math.Abs(1.0 - normalized)
