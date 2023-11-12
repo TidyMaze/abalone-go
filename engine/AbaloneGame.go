@@ -38,19 +38,19 @@ import (
  */
 
 type Game struct {
-	grid          map[Coord3D]int
-	score         map[int]int
-	currentPlayer int
-	Turn          int
-	Winner        int // 0 if no Winner, 1 or 2 if there is a Winner
+	grid          map[Coord3D]int8
+	score         map[int8]int8
+	currentPlayer int8
+	Turn          int8
+	Winner        int8 // 0 if no Winner, 1 or 2 if there is a Winner
 }
 
 var emptyGrid = buildEmptyGrid()
 var startingGrid = buildStartingGrid()
 
-func NewGame(grid *map[Coord3D]int) *Game {
+func NewGame(grid *map[Coord3D]int8) *Game {
 	game := &Game{
-		score:         make(map[int]int),
+		score:         make(map[int8]int8),
 		currentPlayer: 1,
 	}
 
@@ -75,11 +75,11 @@ func (g *Game) IsOver() bool {
 	return g.Winner != 0
 }
 
-func (g *Game) SetGrid(c Coord3D, v int) {
+func (g *Game) SetGrid(c Coord3D, v int8) {
 	g.grid[c] = v
 }
 
-func (g *Game) GetGrid(c Coord3D) int {
+func (g *Game) GetGrid(c Coord3D) int8 {
 	return g.grid[c]
 }
 
@@ -276,8 +276,8 @@ func (g *Game) Move(move Move) error {
 	}
 }
 
-func copyScore(score map[int]int) map[int]int {
-	newScore := make(map[int]int)
+func copyScore(score map[int8]int8) map[int8]int8 {
+	newScore := make(map[int8]int8)
 
 	for k, v := range score {
 		newScore[k] = v
@@ -286,8 +286,8 @@ func copyScore(score map[int]int) map[int]int {
 	return newScore
 }
 
-func copyGrid(grid *map[Coord3D]int) map[Coord3D]int {
-	newGrid := make(map[Coord3D]int)
+func copyGrid(grid *map[Coord3D]int8) map[Coord3D]int8 {
+	newGrid := make(map[Coord3D]int8)
 
 	for k, v := range *grid {
 		newGrid[k] = v

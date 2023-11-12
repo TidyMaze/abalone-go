@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func showGrid(grid map[Coord3D]int) string {
+func showGrid(grid map[Coord3D]int8) string {
 	res := ""
 
 	// top left cell (-4, -4) is in (0,4,-4)
@@ -53,8 +53,8 @@ func showGrid(grid map[Coord3D]int) string {
 	return res
 }
 
-func buildEmptyGrid() map[Coord3D]int {
-	grid := make(map[Coord3D]int)
+func buildEmptyGrid() map[Coord3D]int8 {
+	grid := make(map[Coord3D]int8)
 
 	queue := []Coord3D{{0, 0, 0}}
 
@@ -94,7 +94,7 @@ func buildEmptyGrid() map[Coord3D]int {
 	return grid
 }
 
-func buildStartingGrid() map[Coord3D]int {
+func buildStartingGrid() map[Coord3D]int8 {
 	grid := copyGrid(&emptyGrid)
 
 	// first line

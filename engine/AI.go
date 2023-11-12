@@ -164,7 +164,7 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 	for gameId := 0; gameId < CountGames; gameId++ {
 		game := NewGame(&startingGrid)
 
-		for !game.IsOver() && game.Turn < 30 {
+		for !game.IsOver() && game.Turn < 100 {
 			var move Move
 			if game.currentPlayer == 1 {
 				// player 1 is the organism
@@ -207,8 +207,8 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 			}
 		}
 
-		totalCaptured += game.score[1]
-		totalEnemyCaptured += game.score[2]
+		totalCaptured += int(game.score[1])
+		totalEnemyCaptured += int(game.score[2])
 	}
 
 	scoreDiff := float64(totalCaptured) - float64(totalEnemyCaptured)
