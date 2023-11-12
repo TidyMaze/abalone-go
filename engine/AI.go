@@ -213,8 +213,8 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 			}
 		}
 
-		log.Println(fmt.Sprintf("[Gen %d][Org %d] Finished game %d, score: %v after %d turns",
-			epoch.Id, organism.Genotype.Id, gameId, game.score, game.Turn))
+		//log.Println(fmt.Sprintf("[Gen %d][Org %d] Finished game %d, score: %v after %d turns",
+		//	epoch.Id, organism.Genotype.Id, gameId, game.score, game.Turn))
 
 		totalCaptured += int(game.score[1])
 		totalEnemyCaptured += int(game.score[2])
@@ -292,6 +292,7 @@ func (e *AbaloneGenerationEvaluator) predictSingleMove(phenotype *network.Networ
 		if score > bestMoveScore || bestMove == nil {
 			bestMoveScore = score
 			bestMove = &move
+			//log.Println(fmt.Sprintf("New best move: %v, score: %f", move, score))
 		}
 
 		// Flush network for subsequent use
@@ -300,6 +301,8 @@ func (e *AbaloneGenerationEvaluator) predictSingleMove(phenotype *network.Networ
 			return nil, err
 		}
 	}
+
+	//log.Println(fmt.Sprintf("Best move: %v, score: %f among %d valid moves", *bestMove, bestMoveScore, len(validMoves)))
 
 	return bestMove, nil
 }
