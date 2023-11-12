@@ -134,8 +134,9 @@ func (g *Game) checkCanPush(from Coord3D, direction Direction) ([]Coord3D, []Coo
 		return nil, nil, errors.New(fmt.Sprintf("Invalid from coord: %v", from))
 	}
 
-	if g.currentPlayer != g.grid[from] {
-		return nil, nil, errors.New(fmt.Sprintf("Cannot push marble from %v: it is not the current player's marble (current player: %d, marble color: %d)", from, g.currentPlayer, g.grid[from]))
+	fromCellValue := g.grid[from]
+	if g.currentPlayer != fromCellValue {
+		return nil, nil, errors.New(fmt.Sprintf("Cannot push marble from %v: it is not the current player's marble (current player: %d, marble color: %d)", from, g.currentPlayer, fromCellValue))
 	}
 
 	// check that there are between 1 and 3 marbles in the first cells,
