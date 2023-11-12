@@ -76,12 +76,13 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 	// Fill statistics about current epoch
 	epoch.FillPopulationStatistics(pop)
 
-	log.Println(fmt.Sprintf("[Gen %d] Epoch statistics: %f, fitness: %v", epoch.Id, epoch.Fitness.Mean(), epoch.Fitness))
+	bestFitnessBySpecy := epoch.Fitness
+	log.Println(fmt.Sprintf("[Gen %d] Epoch statistics: %f, fitness: %v", epoch.Id, bestFitnessBySpecy.Mean(), bestFitnessBySpecy))
 
-	pop.MeanFitness = epoch.Fitness.Mean()
+	pop.MeanFitness = bestFitnessBySpecy.Mean()
 
 	helpers.AssertEqual(false, pop.MeanFitness == 0.0)
-	helpers.AssertEqual(false, epoch.Fitness.Mean() == 0.0)
+	helpers.AssertEqual(false, bestFitnessBySpecy.Mean() == 0.0)
 
 	// Only print to file every print_every generation
 	if epoch.Id%options.PrintEvery == 0 {
