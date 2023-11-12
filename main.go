@@ -190,7 +190,7 @@ func main() {
 		RandSeed: seed,
 	}
 	var generationEvaluator experiment.GenerationEvaluator
-	expt.MaxFitnessScore = 6.0
+	expt.MaxFitnessScore = 1.0
 	generationEvaluator = engine.NewAbaloneGenerationEvaluator(outDir)
 
 	// prepare to execute
