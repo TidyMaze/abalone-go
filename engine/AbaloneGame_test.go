@@ -6,7 +6,7 @@ import (
 )
 
 func TestPushSingle(t *testing.T) {
-	game := NewGame()
+	game := NewGame(&emptyGrid)
 	game.SetGrid(Coord3D{0, 0, 0}, 1)
 
 	gameCopy := game.Copy()
@@ -15,14 +15,14 @@ func TestPushSingle(t *testing.T) {
 		t.Fatalf("Error: %v", err)
 	}
 
-	expected := NewGame()
+	expected := NewGame(&emptyGrid)
 	expected.SetGrid(Coord3D{1, -1, 0}, 1)
 
 	helpers.AssertEqual(showGrid(expected.grid), showGrid(gameCopy.grid))
 }
 
 func TestPushSingleBlocked(t *testing.T) {
-	game := NewGame()
+	game := NewGame(&emptyGrid)
 	game.SetGrid(Coord3D{0, 0, 0}, 1)
 	game.SetGrid(Coord3D{1, -1, 0}, 2)
 
@@ -33,7 +33,7 @@ func TestPushSingleBlocked(t *testing.T) {
 }
 
 func TestPushTwo(t *testing.T) {
-	game := NewGame()
+	game := NewGame(&emptyGrid)
 	game.SetGrid(Coord3D{0, 0, 0}, 1)
 	game.SetGrid(Coord3D{1, -1, 0}, 1)
 
@@ -44,7 +44,7 @@ func TestPushTwo(t *testing.T) {
 		t.Fatalf("Error: %v", err)
 	}
 
-	expected := NewGame()
+	expected := NewGame(&emptyGrid)
 	expected.SetGrid(Coord3D{1, -1, 0}, 1)
 	expected.SetGrid(Coord3D{2, -2, 0}, 1)
 
@@ -52,7 +52,7 @@ func TestPushTwo(t *testing.T) {
 }
 
 func TestPushTwoBlocked(t *testing.T) {
-	game := NewGame()
+	game := NewGame(&emptyGrid)
 	game.SetGrid(Coord3D{0, 0, 0}, 1)
 	game.SetGrid(Coord3D{1, -1, 0}, 1)
 	game.SetGrid(Coord3D{2, -2, 0}, 2)
@@ -65,7 +65,7 @@ func TestPushTwoBlocked(t *testing.T) {
 }
 
 func TestPushThree(t *testing.T) {
-	game := NewGame()
+	game := NewGame(&emptyGrid)
 	game.SetGrid(Coord3D{0, 0, 0}, 1)
 	game.SetGrid(Coord3D{1, -1, 0}, 1)
 	game.SetGrid(Coord3D{2, -2, 0}, 1)
@@ -77,7 +77,7 @@ func TestPushThree(t *testing.T) {
 		t.Fatalf("Error: %v", err)
 	}
 
-	expected := NewGame()
+	expected := NewGame(&emptyGrid)
 	expected.SetGrid(Coord3D{1, -1, 0}, 1)
 	expected.SetGrid(Coord3D{2, -2, 0}, 1)
 	expected.SetGrid(Coord3D{3, -3, 0}, 1)
@@ -86,7 +86,7 @@ func TestPushThree(t *testing.T) {
 }
 
 func TestPushThreeBlocked(t *testing.T) {
-	game := NewGame()
+	game := NewGame(&emptyGrid)
 	game.SetGrid(Coord3D{-2, 2, 0}, 1)
 	game.SetGrid(Coord3D{-1, 1, 0}, 1)
 	game.SetGrid(Coord3D{0, 0, 0}, 1)
@@ -101,7 +101,7 @@ func TestPushThreeBlocked(t *testing.T) {
 }
 
 func TestTwoPushOne(t *testing.T) {
-	game := NewGame()
+	game := NewGame(&emptyGrid)
 	game.SetGrid(Coord3D{0, 0, 0}, 1)
 	game.SetGrid(Coord3D{1, -1, 0}, 1)
 	game.SetGrid(Coord3D{2, -2, 0}, 2)
@@ -113,7 +113,7 @@ func TestTwoPushOne(t *testing.T) {
 		t.Fatalf("Error: %v", err)
 	}
 
-	expected := NewGame()
+	expected := NewGame(&emptyGrid)
 	expected.SetGrid(Coord3D{1, -1, 0}, 1)
 	expected.SetGrid(Coord3D{2, -2, 0}, 1)
 	expected.SetGrid(Coord3D{3, -3, 0}, 2)
@@ -122,7 +122,7 @@ func TestTwoPushOne(t *testing.T) {
 }
 
 func TestThreePushOne(t *testing.T) {
-	game := NewGame()
+	game := NewGame(&emptyGrid)
 	game.SetGrid(Coord3D{-1, 1, 0}, 1)
 	game.SetGrid(Coord3D{0, 0, 0}, 1)
 	game.SetGrid(Coord3D{1, -1, 0}, 1)
@@ -135,7 +135,7 @@ func TestThreePushOne(t *testing.T) {
 		t.Fatalf("Error: %v", err)
 	}
 
-	expected := NewGame()
+	expected := NewGame(&emptyGrid)
 	expected.SetGrid(Coord3D{0, 0, 0}, 1)
 	expected.SetGrid(Coord3D{1, -1, 0}, 1)
 	expected.SetGrid(Coord3D{2, -2, 0}, 1)
@@ -145,7 +145,7 @@ func TestThreePushOne(t *testing.T) {
 }
 
 func TestThreePushTwo(t *testing.T) {
-	game := NewGame()
+	game := NewGame(&emptyGrid)
 	game.SetGrid(Coord3D{-2, 2, 0}, 1)
 	game.SetGrid(Coord3D{-1, 1, 0}, 1)
 	game.SetGrid(Coord3D{0, 0, 0}, 1)
@@ -159,7 +159,7 @@ func TestThreePushTwo(t *testing.T) {
 		t.Fatalf("Error: %v", err)
 	}
 
-	expected := NewGame()
+	expected := NewGame(&emptyGrid)
 	expected.SetGrid(Coord3D{-1, 1, 0}, 1)
 	expected.SetGrid(Coord3D{0, 0, 0}, 1)
 	expected.SetGrid(Coord3D{1, -1, 0}, 1)
@@ -170,7 +170,7 @@ func TestThreePushTwo(t *testing.T) {
 }
 
 func TestSandwich(t *testing.T) {
-	game := NewGame()
+	game := NewGame(&emptyGrid)
 	game.SetGrid(Coord3D{-2, 2, 0}, 1)
 	game.SetGrid(Coord3D{-1, 1, 0}, 1)
 	game.SetGrid(Coord3D{0, 0, 0}, 2)
@@ -183,7 +183,7 @@ func TestSandwich(t *testing.T) {
 }
 
 func TestPushSingleCaptured(t *testing.T) {
-	game := NewGame()
+	game := NewGame(&emptyGrid)
 	game.SetGrid(Coord3D{2, -2, 0}, 1)
 	game.SetGrid(Coord3D{3, -3, 0}, 1)
 	game.SetGrid(Coord3D{4, -4, 0}, 2)
@@ -199,13 +199,13 @@ func TestPushSingleCaptured(t *testing.T) {
 
 	helpers.AssertEqual(1, score)
 
-	expected := NewGame()
+	expected := NewGame(&emptyGrid)
 	expected.SetGrid(Coord3D{2, -2, 0}, 1)
 	expected.SetGrid(Coord3D{3, -3, 0}, 1)
 }
 
 func TestGetValidMovesWithSingleCentralMarble(t *testing.T) {
-	game := NewGame()
+	game := NewGame(&emptyGrid)
 	game.SetGrid(Coord3D{0, 0, 0}, 1)
 	game.currentPlayer = 1
 
@@ -224,7 +224,7 @@ func TestGetValidMovesWithSingleCentralMarble(t *testing.T) {
 }
 
 func TestGetValidMovesWithTwoMarbles(t *testing.T) {
-	game := NewGame()
+	game := NewGame(&emptyGrid)
 	game.SetGrid(Coord3D{0, 0, 0}, 1)
 	game.SetGrid(Coord3D{1, -1, 0}, 1)
 	game.currentPlayer = 1
@@ -250,7 +250,7 @@ func TestGetValidMovesWithTwoMarbles(t *testing.T) {
 }
 
 func TestCurrentPlayerAfterPush(t *testing.T) {
-	game := NewGame()
+	game := NewGame(&emptyGrid)
 	game.SetGrid(Coord3D{0, 0, 0}, 1)
 
 	println(game.Show())
@@ -270,7 +270,7 @@ func TestCurrentPlayerAfterPush(t *testing.T) {
 }
 
 func TestCannotSuicide(t *testing.T) {
-	game := NewGame()
+	game := NewGame(&emptyGrid)
 	game.SetGrid(Coord3D{4, -4, 0}, 1)
 	game.currentPlayer = 1
 
