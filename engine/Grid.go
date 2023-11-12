@@ -54,7 +54,7 @@ func showGrid(grid map[Coord3D]int8) string {
 }
 
 func buildEmptyGrid() map[Coord3D]int8 {
-	grid := make(map[Coord3D]int8)
+	grid := make(map[Coord3D]int8, 61)
 
 	queue := []Coord3D{{0, 0, 0}}
 
