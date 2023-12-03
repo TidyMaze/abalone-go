@@ -3,6 +3,7 @@ package engine
 import (
 	"errors"
 	"fmt"
+	"maps"
 	"sort"
 )
 
@@ -288,13 +289,7 @@ func copyScore(score map[int8]int8) map[int8]int8 {
 }
 
 func copyGrid(grid map[Coord3D]int8) map[Coord3D]int8 {
-	newGrid := make(map[Coord3D]int8, len(grid))
-
-	for k, v := range grid {
-		newGrid[k] = v
-	}
-
-	return newGrid
+	return maps.Clone(grid)
 }
 
 func concatSlices[T any](slices ...[]T) []T {
