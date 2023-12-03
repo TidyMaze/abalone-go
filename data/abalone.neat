@@ -3,7 +3,7 @@ excess_coeff  1.0
 mutdiff_coeff  0.4
 compat_threshold  3.0
 age_significance  1.0
-survival_thresh  0.2
+survival_thresh  0.4
 mutate_only_prob  0.25
 mutate_random_trait_prob  0.1
 mutate_link_trait_prob  0.1
