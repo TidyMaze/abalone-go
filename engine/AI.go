@@ -14,6 +14,7 @@ import (
 	"math/rand"
 	"os"
 	"sync"
+	"sync/atomic"
 )
 
 const CountGames = 50
@@ -31,6 +32,8 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 	totalFitness := 0.0
 
 	wg := sync.WaitGroup{}
+
+	wgCount := int32(0)
 
 	for _, org := range pop.Organisms {
 		//log.Println(fmt.Sprintf("[Gen %d] Evaluating organism: %d", epoch.Id, org.Genotype.Id))
@@ -54,6 +57,13 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 			}
 
 			totalFitness = totalFitness + org.Fitness
+
+			atomic.AddInt32(&wgCount, 1)
+
+			progress := float64(atomic.LoadInt32(&wgCount)) / float64(len(pop.Organisms)) * 100.0
+
+			// only 2 decimal places
+			log.Println(fmt.Sprintf("[Gen %d] Progress: %.2f%%", epoch.Id, progress))
 		}()
 	}
 
