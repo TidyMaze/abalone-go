@@ -60,10 +60,10 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 
 			atomic.AddInt32(&wgCount, 1)
 
-			progress := float64(atomic.LoadInt32(&wgCount)) / float64(len(pop.Organisms)) * 100.0
+			//progress := float64(atomic.LoadInt32(&wgCount)) / float64(len(pop.Organisms)) * 100.0
 
 			// only 2 decimal places
-			log.Println(fmt.Sprintf("[Gen %d] Progress: %.2f%%", epoch.Id, progress))
+			//log.Println(fmt.Sprintf("[Gen %d] Progress: %.2f%%", epoch.Id, progress))
 		}()
 	}
 
@@ -82,16 +82,16 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 	log.Println(fmt.Sprintf("[Gen %d] Average fitness: %f for total fitness: %f and population size: %d",
 		epoch.Id, averageFitness, totalFitness, len(pop.Organisms)))
 
-	for _, specy := range pop.Species {
-		max, avg := specy.ComputeMaxAndAvgFitness()
-		log.Println(fmt.Sprintf("[Gen %d] Species id %d, organisms: %d, average fitness: %f, max fitness: %f",
-			epoch.Id, specy.Id, len(specy.Organisms), avg, max))
-	}
+	//for _, specy := range pop.Species {
+	//	max, avg := specy.ComputeMaxAndAvgFitness()
+	//	log.Println(fmt.Sprintf("[Gen %d] Species id %d, organisms: %d, average fitness: %f, max fitness: %f",
+	//		epoch.Id, specy.Id, len(specy.Organisms), avg, max))
+	//}
 
-	for _, org := range pop.Organisms {
-		println(fmt.Sprintf("Org %d, specy %d, fitness: %f, error: %f",
-			org.Genotype.Id, org.Species.Id, org.Fitness, org.Error))
-	}
+	//for _, org := range pop.Organisms {
+	//	println(fmt.Sprintf("Org %d, specy %d, fitness: %f, error: %f",
+	//		org.Genotype.Id, org.Species.Id, org.Fitness, org.Error))
+	//}
 
 	// Fill statistics about current epoch
 	epoch.FillPopulationStatistics(pop)
@@ -110,33 +110,6 @@ func (e *AbaloneGenerationEvaluator) GenerationEvaluate(ctx context.Context, pop
 			neat.ErrorLog(fmt.Sprintf("Failed to dump population, reason: %s\n", err))
 			return err
 		}
-	}
-
-	org := epoch.Champion
-	//utils.PrintActivationDepth(org, true)
-
-	genomeFile := "abalone_champion_genome"
-	// Prints the winner organism's Genome to the file!
-	if orgPath, err := utils.WriteGenomePlain(genomeFile, e.OutputPath, org, epoch); err != nil {
-		neat.ErrorLog(fmt.Sprintf("Failed to dump winner organism's genome, reason: %s\n", err))
-	} else {
-		neat.InfoLog(fmt.Sprintf("Generation #%d winner's genome dumped to: %s\n", epoch.Id, orgPath))
-	}
-
-	// Prints the winner organism's phenotype to the DOT file!
-	if orgPath, err := utils.WriteGenomeDOT(genomeFile, e.OutputPath, org, epoch); err != nil {
-		neat.ErrorLog(fmt.Sprintf("Failed to dump winner organism's phenome DOT graph, reason: %s\n", err))
-	} else {
-		neat.InfoLog(fmt.Sprintf("Generation #%d winner's phenome DOT graph dumped to: %s\n",
-			epoch.Id, orgPath))
-	}
-
-	// Prints the winner organism's phenotype to the Cytoscape JSON file!
-	if orgPath, err := utils.WriteGenomeCytoscapeJSON(genomeFile, e.OutputPath, org, epoch); err != nil {
-		neat.ErrorLog(fmt.Sprintf("Failed to dump winner organism's phenome Cytoscape JSON graph, reason: %s\n", err))
-	} else {
-		neat.InfoLog(fmt.Sprintf("Generation #%d winner's phenome Cytoscape JSON graph dumped to: %s\n",
-			epoch.Id, orgPath))
 	}
 
 	// write epoch, average fitness and champion fitness to CSV file
@@ -185,7 +158,7 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 	// evaluate the organism by running 100 games against random opponent
 	// fitness is the average score difference between the organism and the opponent
 
-	// INPUT: 61 cells, 2 possible states (1,2) = 122 input nodes
+	// INPUT: 9 cells, 2 possible states (1,2) = 18 input nodes
 	// OUTPUT: 1 node for board evaluation
 
 	phenotype, err := organism.Phenotype()
@@ -205,74 +178,82 @@ func (e *AbaloneGenerationEvaluator) orgEvaluate(organism *genetics.Organism, ep
 		return false, nil
 	}
 
-	totalCaptured := 0
-	totalEnemyCaptured := 0
+	totalScore := 0
 
 	for gameId := 0; gameId < CountGames; gameId++ {
 		//log.Println(fmt.Sprintf("[Gen %d][Org %d] Starting game %d", epoch.Id, organism.Genotype.Id, gameId))
 		game := NewGame(startingGrid)
 
-		for !game.IsOver() && game.Turn < 127 {
+		for !game.IsOver() && game.Turn < 10 {
 			//log.Println(fmt.Sprintf("[Gen %d][Org %d] Game %d, turn %d", epoch.Id, organism.Genotype.Id, gameId, game.Turn))
 
-			var move Move
-			if game.currentPlayer == 1 {
-				// player 1 is the organism
+			possibleMoves := game.GetValidMoves()
+			if len(possibleMoves) == 0 {
+				game.Winner = 1
+			} else {
 
-				movePtr, err := e.predictSingleMove(phenotype, netDepth, *game)
+				var move Move
+				if game.currentPlayer == 1 {
+					// player 1 is the organism
 
-				if err != nil {
-					return false, err
-				}
+					movePtr, err := e.predictSingleMove(phenotype, netDepth, *game)
 
-				move = *movePtr
-				//log.Println(fmt.Sprintf("[Gen %d][Org %d] Predicted move: %v", epoch.Id, organism.Genotype.Id, move))
+					if err != nil {
+						return false, err
+					}
 
-				switch move.(type) {
-				case PushLine:
-					err := game.Move(move)
+					move = *movePtr
+					//log.Println(fmt.Sprintf("[Gen %d][Org %d] Predicted move: %v", epoch.Id, organism.Genotype.Id, move))
+
+					err = game.Move(move)
 
 					if err != nil {
 						// invalid move, opponent wins
 						log.Println(fmt.Sprintf("[Gen %d][Org %d] Invalid move: %v", epoch.Id, organism.Genotype.Id, move))
-						game.Winner = 2
-						game.score[2] = 6
+						game.Winner = 3
 						panic(fmt.Sprintf("Invalid move: %v", move))
 					}
-				default:
-					panic(fmt.Sprintf("Invalid move type: %T", move))
-				}
-			} else {
-				// player 2 is the random opponent
+				} else {
+					// player 2 is the random opponent
 
-				// pick a random move
-				possibleMoves := game.GetValidMoves()
-				move = helpers.RandIn(possibleMoves)
+					// pick a random move
+					move = helpers.RandIn(possibleMoves)
 
-				err := game.Move(move)
-				if err != nil {
-					return false, err
+					err := game.Move(move)
+					if err != nil {
+						return false, err
+					}
 				}
+
+				//log.Println(fmt.Sprintf("Turn %d state after move %v:\n%s", game.Turn, move, game.Show()))
 			}
 		}
 
-		//log.Println(fmt.Sprintf("[Gen %d][Org %d] Finished game %d, score: %v after %d turns",
-		//	epoch.Id, organism.Genotype.Id, gameId, game.score, game.Turn))
+		thisGameScore := 0
+		if game.Winner == 2 {
+			thisGameScore += 1000000 - int(game.Turn)
+		} else if game.Winner == 3 {
+			thisGameScore -= 1000000 + int(game.Turn)
+		}
 
-		totalCaptured += int(game.score[1])
-		totalEnemyCaptured += int(game.score[2])
+		//log.Println(fmt.Sprintf("State after game %d:\n%s", gameId, game.Show()))
+
+		//log.Println(fmt.Sprintf("[Gen %d][Org %d] Finished game %d, score: %v after %d turns", epoch.Id, organism.Genotype.Id, gameId, thisGameScore, game.Turn))
+
+		totalScore += thisGameScore
 	}
 
-	avgScoreDiff := (float64(totalCaptured) - float64(totalEnemyCaptured)) / float64(CountGames)
-	score := avgScoreDiff
-	ideal := float64(6)  // win every game at 6-0 for player 1
-	worst := float64(-6) // lose every game at 0-6 for player 1
+	avgScore := float64(totalScore) / float64(CountGames)
+
+	score := avgScore
+	ideal := float64(1000000 - 6)  // win after 6 turns for player 2
+	worst := float64(-1000000 + 6) // lose after 6 turns for player 1
 
 	// normalized between 0 and 1
 	normalized := (score - worst) / (ideal - worst)
 
-	log.Println(fmt.Sprintf("[Gen %d][Org %d] Finished ranking organism, score diff: %f, normalized: %f, ideal: %f",
-		epoch.Id, organism.Genotype.Id, avgScoreDiff, normalized, 1.0))
+	//log.Println(fmt.Sprintf("[Gen %d][Org %d] Finished ranking organism, score diff: %f, normalized: %f, ideal: %f",
+	//	epoch.Id, organism.Genotype.Id, avgScore, normalized, 1.0))
 
 	organism.Fitness = normalized
 	organism.Error = math.Abs(1.0 - normalized)
@@ -305,22 +286,20 @@ func (e *AbaloneGenerationEvaluator) predictSingleMove(phenotype *network.Networ
 		var in []float64
 
 		// Set the input values
-		for y := int8(-4); y <= 4; y++ {
-			for x := int8(-4); x <= 4; x++ {
-				coord := Coord2D{x, y}.To3D()
-				if IsValidCoord(coord) {
-					cellOwner := nextState.GetGrid(coord)
-					player1 := 0.0
-					player2 := 0.0
+		for y := int8(0); y < 3; y++ {
+			for x := int8(0); x < 3; x++ {
+				coord := Coord2D{x, y}
+				cellOwner := nextState.GetGrid(coord)
+				player1 := 0.0
+				player2 := 0.0
 
-					if cellOwner == 1 {
-						player1 = 1.0
-					} else if cellOwner == 2 {
-						player2 = 1.0
-					}
-
-					in = append(in, player1, player2)
+				if cellOwner == 1 {
+					player1 = 1.0
+				} else if cellOwner == 2 {
+					player2 = 1.0
 				}
+
+				in = append(in, player1, player2)
 			}
 		}
 

@@ -112,21 +112,21 @@ func main() {
 	nodesCount := 0
 	allNodes := make([]*network.NNode, 0)
 
-	hiddenNodesCount := 10
+	hiddenNodesCount := 9
 
 	inputNodes := make([]*network.NNode, 0)
 	hiddenNodes := make([]*network.NNode, 0)
 	outputNodes := make([]*network.NNode, 0)
 
-	// Add the 61*2 input nodes
-	for i := 0; i < 61*2; i++ {
+	// Add the 9*2 input nodes
+	for i := 0; i < 9*2; i++ {
 		n := network.NewNNode(nodesCount, network.InputNeuron)
 		allNodes = append(allNodes, n)
 		inputNodes = append(inputNodes, n)
 		nodesCount++
 	}
 
-	// Add the 10 hidden nodes
+	// Add the hiddenNodesCount hidden nodes
 	for i := 0; i < hiddenNodesCount; i++ {
 		n := network.NewNNode(nodesCount, network.HiddenNeuron)
 		allNodes = append(allNodes, n)

@@ -49,9 +49,7 @@ func (c Coord3D) Add(direction Direction) Coord3D {
 	return Coord3D{}
 }
 
-func IsValidCoord(c Coord3D) bool {
-	return helpers.Between(c.X, -4, 4) &&
-		helpers.Between(c.Y, -4, 4) &&
-		helpers.Between(c.Z, -4, 4) &&
-		c.X+c.Y+c.Z == 0
+func IsValidCoord(c Coord2D) bool {
+	return helpers.Between(c.X, 0, 2) &&
+		helpers.Between(c.Y, 0, 2)
 }
